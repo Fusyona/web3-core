@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/Fusyona/web3-core/issues"
   },
-  "homepage": "https://github.com/Fusyona/web3-core#readme"
+  "homepage": "https://github.com/Fusyona/web3-core#readme",
+  "dependencies": {
+    "typescript": "^5.4.2"
+  }
 }
