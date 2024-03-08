@@ -1,0 +1,23 @@
+{
+  "name": "web3-core",
+  "version": "0.0.1-beta1",
+  "description": "Fusyona web3 tools library.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fusyona/web3-core.git"
+  },
+  "keywords": [
+    "web3",
+    "typescript"
+  ],
+  "author": "Fusyona",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Fusyona/web3-core/issues"
+  },
+  "homepage": "https://github.com/Fusyona/web3-core#readme"
+}
