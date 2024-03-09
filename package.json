@@ -1,26 +1,29 @@
 {
   "name": "web3-core",
-  "version": "0.0.1-beta1",
+  "version": "0.0.1-beta2",
   "description": "Fusyona web3 tools library.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Fusyona/web3-core.git"
+    "url": "https://github.com/Fusyona/web3-core"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "keywords": [
     "web3",
     "typescript"
   ],
-  "author": "Fusyona",
-  "license": "LGPL-3.0-or-later",
+  "author": "Fusyona Web3 Team",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/Fusyona/web3-core/issues"
   },
   "homepage": "https://github.com/Fusyona/web3-core#readme",
-  "dependencies": {
+  "devDependencies" {
     "typescript": "^5.4.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
