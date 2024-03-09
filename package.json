@@ -16,6 +16,9 @@
   ],
   "author": "Fusyona Web3 Team",
   "license": "GPL-3.0",
+  "files": [
+    "/lib"
+  ],
   "bugs": {
     "url": "https://github.com/Fusyona/web3-core/issues"
   },
