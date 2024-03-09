@@ -1,6 +1,6 @@
 {
   "name": "@fusyona/web3-core",
-  "version": "0.0.1-beta3",
+  "version": "0.0.1-beta4",
   "description": "Fusyona web3 tools library.",
   "main": "index.js",
   "repository": {
@@ -16,6 +16,9 @@
   ],
   "author": "Fusyona Web3 Team",
   "license": "GPL-3.0",
+  "files": [
+    "/lib"
+  ],
   "bugs": {
     "url": "https://github.com/Fusyona/web3-core/issues"
   },
