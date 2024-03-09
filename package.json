@@ -1,5 +1,5 @@
 {
-  "name": "web3-core",
+  "name": "@fusyona/web3-core",
   "version": "0.0.1-beta2",
   "description": "Fusyona web3 tools library.",
   "main": "index.js",
@@ -20,7 +20,7 @@
     "url": "https://github.com/Fusyona/web3-core/issues"
   },
   "homepage": "https://github.com/Fusyona/web3-core#readme",
-  "devDependencies" {
+  "devDependencies": {
     "typescript": "^5.4.2"
   },
   "scripts": {
