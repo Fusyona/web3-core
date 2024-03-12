@@ -1,6 +1,6 @@
 {
   "name": "@fusyona/web3-core",
-  "version": "0.0.1-beta4",
+  "version": "0.0.1-beta5",
   "description": "Fusyona web3 tools library.",
   "main": "index.js",
   "repository": {
@@ -27,6 +27,9 @@
     "typescript": "^5.4.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "preinstall": "npx only-allow pnpm",
+    "compile": "pnpm hardhat compile",
+    "test": "pnpm hardhat test",
+    "prepare": "pnpm tsc"
   }
 }
