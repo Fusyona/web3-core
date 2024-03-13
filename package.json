@@ -18,7 +18,8 @@
   "license": "GPL-3.0",
   "files": [
     "/lib",
-    "/contracts"
+    "/contracts",
+    "/typechain-types"
   ],
   "bugs": {
     "url": "https://github.com/Fusyona/web3-core/issues"
