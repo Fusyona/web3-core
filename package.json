@@ -59,7 +59,7 @@
     "postinstall": "pnpm gitconfig",
     "compile": "pnpm hardhat compile",
     "test": "pnpm hardhat test",
-    "prepare": "pnpm tsc",
+    "prepublishOnly": "pnpm tsc",
     "gitconfig": "git config core.hooksPath .githooks"
   }
 }
