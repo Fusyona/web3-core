@@ -1,6 +1,6 @@
 {
   "name": "@fusyona/web3-core",
-  "version": "0.2.0-beta.1",
+  "version": "0.2.0",
   "description": "Fusyona web3 tools library.",
   "main": "index.js",
   "repository": {
