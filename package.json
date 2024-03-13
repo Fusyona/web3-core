@@ -56,8 +56,10 @@
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
+    "postinstall": "pnpm gitconfig",
     "compile": "pnpm hardhat compile",
     "test": "pnpm hardhat test",
-    "prepare": "pnpm tsc"
+    "prepare": "pnpm tsc",
+    "gitconfig": "git config core.hooksPath .githooks"
   }
 }
