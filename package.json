@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/Fusyona/web3-core#readme",
   "devDependencies": {
+    "@commitlint/cli": "^19.1.0",
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
     "@nomicfoundation/hardhat-ethers": "^3.0.0",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
