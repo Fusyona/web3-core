@@ -1,0 +1,4 @@
+#!/bin/sh
+
+MSG_FILE=$1
+pnpm commitlint --edit $MSG_FILE
