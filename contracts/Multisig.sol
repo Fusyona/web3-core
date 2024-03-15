@@ -2,9 +2,21 @@
 pragma solidity >= 0.8.0;
 
 contract Multisig {
-    uint8 signCount = 3;
+    uint8 constant SIGN_COUNT = 3;
+
     address[] public signers;
-    mapping(bytes32 => uint8) callSignatures;
+
+    mapping(bytes32 => address[SIGN_COUNT]) callSignatures;
+
+    function _isOnCallStack(bytes32 data, address signer) internal view returns (bool) {
+        address[SIGN_COUNT] memory callSigners = callSignatures[data];
+
+        for (uint8 i = 0; i < callSigners.length; i++) {
+            if (callSigners[i] == signer) return true;
+        }
+
+        return false;
+    }
 
     function _isSigner(address addr) internal view returns (bool) {
         for (uint i = 0; i < signers.length; i++) {
@@ -14,17 +26,30 @@ contract Multisig {
         return false;
     }
 
+    function _getSignatureCount(bytes32 data) internal view returns (uint8 count) {
+        address[SIGN_COUNT] memory callSigners = callSignatures[data];
+
+        for (uint8 i = 0; i < SIGN_COUNT; i++) {
+            if (callSigners[i] != address(0)) count++;
+        }
+    }
+
     function signCall(bytes32 data) public onlySigner {
-        // TODO: Implement multi self signing check
-        uint8 signatures = callSignatures[data] + 1;
+        require(!_isOnCallStack(data, msg.sender), "sign for call already sent");
+
         emit CallSigned(msg.sender, data);
         
-        if (signatures >= signCount) {
+        uint8 signatureCount = _getSignatureCount(data);
+
+        if (signatureCount + 1 >= SIGN_COUNT) {
             // TODO: Implement function call
             emit CallExecuted(data);
-            callSignatures[data] = 0;
+
+            for (uint8 i = 0; i < SIGN_COUNT; i++) {
+                callSignatures[data][i] = address(0);
+            }
         } else {
-            callSignatures[data] = signatures;
+            callSignatures[data][signatureCount - 1] = msg.sender;
         }
     } 
 
