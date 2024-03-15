@@ -8,6 +8,19 @@ contract Multisig {
 
     mapping(bytes32 => address[SIGN_COUNT]) callSignatures;
 
+    event CallSigned(address signer, bytes32 call);
+    event CallExecuted(bytes32 call);
+
+    modifier onlySigner() {
+        require(_isSigner(msg.sender), "sender is not a signer");
+        _;
+    }
+
+    modifier requireMultisig() {
+        // TODO: Implement restriction for direct call        
+        _;
+    }
+
     function _isOnCallStack(bytes32 data, address signer) internal view returns (bool) {
         address[SIGN_COUNT] memory callSigners = callSignatures[data];
 
@@ -53,16 +66,4 @@ contract Multisig {
         }
     } 
 
-    modifier onlySigner() {
-        require(_isSigner(msg.sender), "sender is not a signer");
-        _;
-    }
-
-    modifier requireMultisig() {
-        // TODO: Implement restriction for direct call        
-        _;
-    }
-
-    event CallSigned(address signer, bytes32 call);
-    event CallExecuted(bytes32 call);
 }
