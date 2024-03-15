@@ -1,4 +1,5 @@
 import "./types"
+import "./config"
 import "./base-wrapper"
 
 export default function helloWorld() {
