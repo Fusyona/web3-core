@@ -7,6 +7,9 @@ contract Multisig {
     address[] public signers;
     mapping(bytes32 => address[SIGN_COUNT]) callSignatures;
 
+    error InvalidSigner(address signer);
+    error AlreadySignedCall(address signer, bytes32 call);
+
     event CallSigned(address signer, bytes32 call);
     event CallExecuted(bytes32 call);
     
@@ -15,7 +18,7 @@ contract Multisig {
     }
 
     modifier onlySigner() {
-        require(_isSigner(msg.sender), "sender is not a signer");
+        if (!_isSigner(msg.sender)) revert InvalidSigner(msg.sender);
         _;
     }
 
@@ -51,7 +54,7 @@ contract Multisig {
     }
 
     function signCall(bytes32 data) public onlySigner {
-        require(!_isOnCallStack(data, msg.sender), "sign for call already sent");
+        if (_isOnCallStack(data, msg.sender)) revert AlreadySignedCall(msg.sender, data);
 
         emit CallSigned(msg.sender, data);
         
