@@ -5,8 +5,11 @@ contract Multisig {
     uint8 constant SIGN_COUNT = 3;
 
     address[] public signers;
-
     mapping(bytes32 => address[SIGN_COUNT]) callSignatures;
+
+    constructor(address[] memory _signers) {
+        signers = _signers;
+    }
 
     function _isOnCallStack(bytes32 data, address signer) internal view returns (bool) {
         address[SIGN_COUNT] memory callSigners = callSignatures[data];
