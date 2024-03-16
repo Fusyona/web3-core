@@ -27,7 +27,7 @@ contract Multisig {
     function _isOnCallStack(bytes32 data, address signer) internal view returns (bool) {
         address[SIGN_COUNT] memory callSigners = callSignatures[data];
 
-        for (uint8 i = 0; i < callSigners.length; i++) {
+        for (uint8 i; i < callSigners.length; ++i) {
             if (callSigners[i] == signer) return true;
         }
 
@@ -35,7 +35,7 @@ contract Multisig {
     }
 
     function _isSigner(address addr) internal view returns (bool) {
-        for (uint i = 0; i < signers.length; i++) {
+        for (uint i; i < signers.length; ++i) {
             if (signers[i] == addr) return true; 
         }
 
@@ -45,8 +45,8 @@ contract Multisig {
     function _getSignatureCount(bytes32 data) internal view returns (uint8 count) {
         address[SIGN_COUNT] memory callSigners = callSignatures[data];
 
-        for (uint8 i = 0; i < SIGN_COUNT; i++) {
-            if (callSigners[i] != address(0)) count++;
+        for (uint8 i; i < SIGN_COUNT; ++i) {
+            if (callSigners[i] != address(0)) ++count;
         }
     }
 
@@ -61,12 +61,11 @@ contract Multisig {
             // TODO: Implement function call
             emit CallExecuted(data);
 
-            for (uint8 i = 0; i < SIGN_COUNT; i++) {
+            for (uint8 i; i < SIGN_COUNT; ++i) {
                 callSignatures[data][i] = address(0);
             }
         } else {
             callSignatures[data][signatureCount - 1] = msg.sender;
         }
-    } 
-
+    }
 }
