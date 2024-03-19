@@ -5,7 +5,7 @@ contract Multisig {
     uint8 constant SIGN_COUNT = 3;
 
     address[] public signers;
-    mapping(bytes32 => address[SIGN_COUNT]) callSignatures;
+    mapping(bytes32 functionSelector => address[SIGN_COUNT] signers) signatures;
 
     error InvalidSigner(address signer);
     error AlreadySignedCall(address signer, bytes32 call);
@@ -28,7 +28,7 @@ contract Multisig {
     }
 
     function _isOnCallStack(bytes32 data, address signer) internal view returns (bool) {
-        address[SIGN_COUNT] memory callSigners = callSignatures[data];
+        address[SIGN_COUNT] memory callSigners = signatures[data];
 
         for (uint8 i; i < callSigners.length; ++i) {
             if (callSigners[i] == signer) return true;
@@ -46,7 +46,7 @@ contract Multisig {
     }
 
     function _getSignatureCount(bytes32 data) internal view returns (uint8 count) {
-        address[SIGN_COUNT] memory callSigners = callSignatures[data];
+        address[SIGN_COUNT] memory callSigners = signatures[data];
 
         for (uint8 i; i < SIGN_COUNT; ++i) {
             if (callSigners[i] != address(0)) ++count;
@@ -65,10 +65,10 @@ contract Multisig {
             emit CallExecuted(data);
 
             for (uint8 i; i < SIGN_COUNT; ++i) {
-                callSignatures[data][i] = address(0);
+                signatures[data][i] = address(0);
             }
         } else {
-            callSignatures[data][signatureCount - 1] = msg.sender;
+            signatures[data][signatureCount - 1] = msg.sender;
         }
     }
 }
