@@ -9,7 +9,7 @@ describe("Multisig", function() {
         let signerAddresses: string[] = [];
         // Using 3 wallets for initial test
         for (let i  = 0; i < 3; i++) {
-            signerAddresses.push(await signers[i].getAddress())
+            signerAddresses.push(await signers[i].getAddress());
         }
 
         const Multisig = await ethers.getContractFactory("Multisig");
