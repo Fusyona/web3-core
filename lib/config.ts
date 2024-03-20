@@ -11,7 +11,8 @@ class NetworkConfig {
     public name: string ;
     public rpcUrl: string ;
     public chainId: number ;
-    public explorerUrl: string ; public accounts: HttpNetworkAccountsUserConfig ;
+    public explorerUrl: string ;
+    public accounts: HttpNetworkAccountsUserConfig ;
 
     constructor(networkName: string, networkData: NetworkConfigData, accounts: HttpNetworkAccountsUserConfig) {
         this.name = networkName ;
