@@ -8,6 +8,7 @@ contract Multisig {
     mapping(bytes32 functionSelector => address[SIGN_COUNT] signers) signatures;
 
     error InvalidSigner(address signer);
+    error InvalidCall(bytes data);
     error AlreadySignedCall(address signer, bytes32 call);
 
     event CallSigned(address signer, bytes32 call);
@@ -53,7 +54,9 @@ contract Multisig {
         }
     }
 
-    function signCall(bytes32 data) public onlySigner {
+    function signCall(bytes calldata funcData) public onlySigner {
+        bytes32 data = keccak256(funcData);
+
         if (_isOnCallStack(data, msg.sender)) revert AlreadySignedCall(msg.sender, data);
 
         emit CallSigned(msg.sender, data);
@@ -61,7 +64,10 @@ contract Multisig {
         uint8 signatureCount = _getSignatureCount(data);
 
         if (signatureCount + 1 >= SIGN_COUNT) {
-            // TODO: Implement function call
+            (bool success, ) = address(this).call(funcData);
+
+            if (!success) revert InvalidCall(funcData);
+
             emit CallExecuted(data);
 
             for (uint8 i; i < SIGN_COUNT; ++i) {
