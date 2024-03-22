@@ -16,7 +16,7 @@ class NetworkConfig {
 
     constructor(networkName: string, networkData: NetworkConfigData, accounts: HttpNetworkAccountsUserConfig) {
         this.name = networkName ;
-        this.rpcUrl = networkData.rpcUrl ;
+        this.rpcUrl = this.withRpcUrl(networkData.rpcUrl) ;
         this.chainId = networkData.chainId ;
         this.explorerUrl = networkData.explorerUrl! ;
         this.accounts = accounts ;
@@ -27,19 +27,14 @@ class NetworkConfig {
         return this ;
     }
 
-    withApiKey(apiKeyName?: string) {
-        this.setApiKey(apiKeyName) ;
-        return this ;
-    }
-
-    setApiKey() {
-        if ( !this.rpcUrlNeedsApiKey() ) {
-            return
+    withRpcUrl(rpcUrl: string) {
+        if ( !this.rpcUrlNeedsApiKey(rpcUrl) ) {
+            return rpcUrl
         }
 
-        const apiKey = vars.get(this.rpcUrlApiKeyName) ;
-        this.rpcUrl = this.rpcUrl.replace(
-            this.rpcUrlApiKeyPattern,
+        const apiKey = vars.get(this.rpcUrlApiKeyName(rpcUrl)) ;
+        return rpcUrl.replace(
+            this.rpcUrlApiKeyPattern(rpcUrl),
             apiKey
         )
     }
@@ -67,20 +62,20 @@ class NetworkConfig {
         }
     }
 
-    private rpcUrlNeedsApiKey() : boolean {
-        return this.rpcUrlApiKeyMatches !== null
+    private rpcUrlNeedsApiKey(rpcUrl: string) : boolean {
+        return this.rpcUrlApiKeyMatches(rpcUrl) !== null
     }
 
-    get rpcUrlApiKeyName() : string {
-        return this.rpcUrlApiKeyMatches?.[1]!
+    private rpcUrlApiKeyName(rpcUrl: string) : string {
+        return this.rpcUrlApiKeyMatches(rpcUrl)?.[1]! // returns `PATTERN` without the `{}`
     }
 
-    get rpcUrlApiKeyPattern() : string {
-        return this.rpcUrlApiKeyMatches?.[0]!
+    private rpcUrlApiKeyPattern(rpcUrl: string) : string {
+        return this.rpcUrlApiKeyMatches(rpcUrl)?.[0]! // returns `{PATTERN}`
     }
 
-    get rpcUrlApiKeyMatches() : RegExpMatchArray | null {
-        return this.rpcUrl.match(/\{(.+)\}/)
+    private rpcUrlApiKeyMatches(rpcUrl: string) : RegExpMatchArray | null {
+        return rpcUrl.match(/\{(.+)\}/)
     }
 
 }
@@ -93,7 +88,7 @@ export default class NetworkConfigs {
     constructor(accounts: string[]) {
         Object.entries(networks).map( ([name, data]) => {
             const networkConfig = new NetworkConfig(name, data, accounts) ;
-            this.networks[name] = networkConfig.withApiKey() ;
+            this.networks[name] = networkConfig ;
         })
     }
 
