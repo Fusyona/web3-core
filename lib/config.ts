@@ -32,21 +32,16 @@ class NetworkConfig {
         return this ;
     }
 
-    setApiKey(apiKeyName?: string) {
-        if ( this.rpcUrlNeedsApiKey() ) {
-
-            if ( typeof apiKeyName === undefined ) {
-                const apiKey = vars.get(this.rpcUrlApiKeyName) ;
-                this.rpcUrl = this.rpcUrl.replace(
-                    this.rpcUrlApiKeyPattern,
-                    apiKey
-                )
-                return
-            }
-
-            const apiKey = vars.get(apiKeyName!)
-            this.rpcUrl = `${this.rpcUrl}/${apiKey}`
+    setApiKey() {
+        if ( !this.rpcUrlNeedsApiKey() ) {
+            return
         }
+
+        const apiKey = vars.get(this.rpcUrlApiKeyName) ;
+        this.rpcUrl = this.rpcUrl.replace(
+            this.rpcUrlApiKeyPattern,
+            apiKey
+        )
     }
 
     get config() : HttpNetworkUserConfig {
