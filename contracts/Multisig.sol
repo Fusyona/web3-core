@@ -9,6 +9,7 @@ contract Multisig {
 
     error InvalidSigner(address signer);
     error InvalidCall(bytes data);
+    error MultisigRequired();
     error AlreadySignedCall(address signer, bytes32 call);
 
     event CallSigned(address signer, bytes32 call);
@@ -24,7 +25,7 @@ contract Multisig {
     }
 
     modifier requireMultisig() {
-        // TODO: Implement restriction for direct call        
+        if (msg.sender != address(this)) revert MultisigRequired();    
         _;
     }
 
