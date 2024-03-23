@@ -72,10 +72,10 @@ contract Multisig {
             emit CallExecuted(funcData);
 
             for (uint8 i; i < SIGN_COUNT; ++i) {
-                signatures[data][i] = address(0);
+                delete(signatures[data][i]);
             }
         } else {
-            signatures[data][signatureCount - 1] = msg.sender;
+            signatures[data][signatureCount] = msg.sender;
         }
     }
 }
