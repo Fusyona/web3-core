@@ -3,6 +3,7 @@ import {
     Contract,
     Transaction,
     AddressLike,
+    Addressable,
 } from "ethers";
 
 import {
@@ -11,7 +12,7 @@ import {
 } from "./types";
 
 
-export default abstract class BaseWrapper {
+export default abstract class BaseWrapper implements Addressable {
     protected contract!: Contract;
     protected provider!: SupportedProvider;
     protected signer: Signer | undefined;
