@@ -88,12 +88,12 @@ export default class NetworkConfigs {
         let networkConfigs: any = {} ;
         let networksToConsider: NetworkConfig[] = [];
         
-
         if (typeof filteredNetworks === undefined) {
             networksToConsider = this.getNetworks()
         } else {
-            this.getNetworks()
-                .filter( networkConfig => filteredNetworks!.includes(networkConfig.name as SupportedNetworkName)  )
+            this.getNetworks().filter(
+                networkConfig => filteredNetworks!.includes(networkConfig.name as SupportedNetworkName)
+            )
         }
 
         networksToConsider.map(
