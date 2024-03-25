@@ -1,9 +1,14 @@
 import { BrowserProvider, JsonRpcProvider, Addressable, ContractTransaction } from "ethers";
 
+import networks from "./networks.json" ;
+
+
 export type Address = string ;
 export type AddressOrAddressable = Address | Addressable ;
 
 export type SupportedProvider = BrowserProvider | JsonRpcProvider
+
+export type SupportedNetworkName = keyof typeof networks ;
 
 export interface NetworkConfigData {
     rpcUrl: string,
