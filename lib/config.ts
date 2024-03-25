@@ -1,12 +1,12 @@
 import { vars } from "hardhat/config"
-import { HttpNetworkUserConfig, HttpNetworkAccountsUserConfig } from "hardhat/types"
+import { NetworksUserConfig, HttpNetworkUserConfig, HttpNetworkAccountsUserConfig  } from "hardhat/types"
 import { ChainConfig } from "@nomicfoundation/hardhat-verify/types" ;
 
-import { NetworkConfigData } from "./types"
+import { NetworkConfigData, SupportedNetworkName } from "./types"
 import networks from "./networks.json" ;
 
 
-class NetworkConfig {
+export class NetworkConfig {
 
     public name: string ;
     public rpcUrl: string ;
@@ -14,7 +14,7 @@ class NetworkConfig {
     public explorerUrl: string ;
     public accounts: HttpNetworkAccountsUserConfig ;
 
-    constructor(networkName: string, networkData: NetworkConfigData, accounts: HttpNetworkAccountsUserConfig) {
+    constructor(networkName: SupportedNetworkName, networkData: NetworkConfigData, accounts: HttpNetworkAccountsUserConfig) {
         this.name = networkName ;
         this.rpcUrl = this.withRpcUrl(networkData.rpcUrl) ;
         this.chainId = networkData.chainId ;
@@ -28,9 +28,7 @@ class NetworkConfig {
     }
 
     withRpcUrl(rpcUrl: string) {
-        if ( !this.rpcUrlNeedsApiKey(rpcUrl) ) {
-            return rpcUrl
-        }
+        if ( !this.rpcUrlNeedsApiKey(rpcUrl) ) return rpcUrl
 
         const apiKey = vars.get(this.rpcUrlApiKeyName(rpcUrl)) ;
         return rpcUrl.replace(
@@ -82,14 +80,62 @@ class NetworkConfig {
 
 export default class NetworkConfigs {
 
-    // @TODO assign type
-    public networks: any = {} ;
+    constructor(public accounts: HttpNetworkAccountsUserConfig) {
+        this.accounts = accounts ;
+    }
 
-    constructor(accounts: string[]) {
-        Object.entries(networks).map( ([name, data]) => {
-            const networkConfig = new NetworkConfig(name, data, accounts) ;
-            this.networks[name] = networkConfig ;
-        })
+    networks(filteredNetworks?: SupportedNetworkName[]) : NetworksUserConfig {
+        let networkConfigs: any = {} ;
+
+        if (typeof filteredNetworks === undefined) {
+            this.getNetworks().map(
+                networkConfig => networkConfigs[networkConfig.name] = networkConfig.config
+            )
+        } else {
+            this.getNetworks()
+                .filter( networkConfig => filteredNetworks!.includes(networkConfig.name as SupportedNetworkName)  )
+                .map(
+                    networkConfig => networkConfigs[networkConfig.name] = networkConfig.config
+                )
+        }
+
+        return networkConfigs
+    }
+
+    customChains(filteredNetworks?: SupportedNetworkName[]) : ChainConfig[] {
+        const networks = this.getNetworks()
+        
+        if (typeof filteredNetworks === undefined) {
+            return networks.map( networkConfig => networkConfig.customChain )
+        } 
+
+        return networks
+            .filter( networkConfig => filteredNetworks!.includes(networkConfig.name as SupportedNetworkName) )
+            .map( networkConfig => networkConfig.customChain )
+    }
+
+    network(name: SupportedNetworkName) : HttpNetworkUserConfig {
+        return this.networkConfig(name).config
+    }
+
+    customChain(name: SupportedNetworkName) : ChainConfig {
+        return this.networkConfig(name).customChain
+    }
+
+    networkConfig(name: SupportedNetworkName) : NetworkConfig {
+        const networkConfig = networks[name] as NetworkConfigData
+        return new NetworkConfig(name, networkConfig, this.accounts)
+    }
+
+    private getNetworks() :  NetworkConfig[] {
+        let userNetworkConfig = [] ;
+
+        for (let name in networks) {
+            const networkConfig = this.networkConfig(name as SupportedNetworkName)
+            userNetworkConfig.push(networkConfig)
+        }
+
+        return userNetworkConfig
     }
 
 }
