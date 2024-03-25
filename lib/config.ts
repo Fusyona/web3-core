@@ -85,21 +85,21 @@ export default class NetworkConfigs {
     }
 
     networks(filteredNetworks?: SupportedNetworkName[]) : NetworksUserConfig {
-        let networkConfigs: any = {} ;
+        let networks: any = {} ;
 
         if (typeof filteredNetworks === undefined) {
             this.getNetworks().map(
-                networkConfig => networkConfigs[networkConfig.name] = networkConfig.config
+                networkConfig => networks[networkConfig.name] = networkConfig.config
             )
         } else {
             this.getNetworks()
                 .filter( networkConfig => filteredNetworks!.includes(networkConfig.name as SupportedNetworkName)  )
                 .map(
-                    networkConfig => networkConfigs[networkConfig.name] = networkConfig.config
+                    networkConfig => networks[networkConfig.name] = networkConfig.config
                 )
         }
 
-        return networkConfigs
+        return networks
     }
 
     customChains(filteredNetworks?: SupportedNetworkName[]) : ChainConfig[] {
