@@ -8,7 +8,7 @@
         "url": "https://bsc-dataseed1.binance.org"
     },
     "taraxa": {
-        "rpcUrl": "",
+        "rpcUrl": "https://rpc.mainnet.taraxa.io/",
         "chainId": 841,
         "explorerUrl": "https://explorerUrl.mainnet.taraxa.io/"
     },
