@@ -16,7 +16,7 @@ export class NetworkConfig {
 
     constructor(networkName: SupportedNetworkName, networkData: NetworkConfigData, accounts: HttpNetworkAccountsUserConfig) {
         this.name = networkName ;
-        this.rpcUrl = this.withRpcUrl(networkData.rpcUrl) ;
+        this.rpcUrl = this.useRpcUrl(networkData.rpcUrl) ;
         this.chainId = networkData.chainId ;
         this.explorerUrl = networkData.explorerUrl! ;
         this.accounts = accounts ;
@@ -27,7 +27,7 @@ export class NetworkConfig {
         return this ;
     }
 
-    withRpcUrl(rpcUrl: string) {
+    useRpcUrl(rpcUrl: string) {
         if ( !this.rpcUrlNeedsApiKey(rpcUrl) ) return rpcUrl
 
         const apiKey = vars.get(this.rpcUrlApiKeyName(rpcUrl)) ;
