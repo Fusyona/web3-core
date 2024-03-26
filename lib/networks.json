@@ -1,0 +1,45 @@
+{
+    "polygonPos": {
+        "rpcUrl": "https://polygon-mainnet.infura.io/v3/{PROVIDER_API_KEY}",
+        "chainId": 137
+    },
+    "bsc": {
+        "chainId": 56,
+        "url": "https://bsc-dataseed1.binance.org"
+    },
+    "taraxa": {
+        "rpcUrl": "https://rpc.mainnet.taraxa.io/",
+        "chainId": 841,
+        "explorerUrl": "https://explorerUrl.mainnet.taraxa.io/"
+    },
+    "coredao" : {
+        "rpcUrl": "https://rpc.coredao.org/",
+        "chainId": 1116,
+        "explorerUrl": "https://scan.coredao.org/"
+    },
+
+
+    "mumbai": {
+        "rpcUrl": "https://polygon-mumbai.infura.io/v3/{PROVIDER_API_KEY}",
+        "chainId": 80001
+    },
+    "bsc-testnet": {
+        "rpcUrl": "https://data-seed-prebsc-1-s1.binance.org:8545",
+        "chainId": 97
+    },
+    "taraxa-testnet": {
+        "rpcUrl": "https://rpc.testnet.taraxa.io/",
+        "chainId": 842,
+        "explorerUrl": "https://explorerUrl.testnet.taraxa.io/"
+    },
+    "coredao-testnet" : {
+        "rpcUrl": "https://rpc.test.btcs.network/",
+        "chainId": 1115,
+        "explorerUrl": "https://scan.test.btcs.network/"
+    },
+    "sei-testnet" : {
+        "url": "https://evm-rpc-arctic-1.sei-apis.com/",
+        "chainId": 713715,
+        "explorerUrl": "https://seistream.app/"
+    }
+}
