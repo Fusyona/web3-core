@@ -13,7 +13,7 @@ contract Multisig {
     error AlreadySignedCall(address signer, bytes32 call);
 
     event CallSigned(address signer, bytes32 call);
-    event CallExecuted(bytes data);
+    event CallExecuted(bytes32 data);
     
     constructor(address[] memory _signers) {
         signers = _signers;
@@ -69,7 +69,7 @@ contract Multisig {
 
             if (!success) revert InvalidCall(funcData);
 
-            emit CallExecuted(funcData);
+            emit CallExecuted(data);
 
             for (uint8 i; i < SIGN_COUNT; ++i) {
                 delete(signatures[data][i]);
