@@ -1,27 +1,79 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { Multisig } from "../typechain-types";
+import { MSExample } from "../typechain-types/Multisig_example.sol";
 
 describe("Multisig", function () {
-    let signerAddresses: string[] = [];
-    let multisig: Multisig;
+    let multisigExample: MSExample;
+
+    const signerCount = 3;
+    const ABI = ["function helloWorld()"];
+    const abiInterface = new ethers.utils.Interface(ABI);
 
     beforeEach(async () => {
-        const signers = await ethers.getSigners();
+        const signers = await ethers.getSigners()
+        let signerAddresses: string[] = [];
 
-        // Using 3 wallets for initial test
-        for (let i = 0; i < 3; i++) {
-            signerAddresses.push(await signers[i].getAddress());
+        for (let i = 0; i < signerCount; i++) {
+            signerAddresses.push(signers[i].address);
         }
-        const Multisig = await ethers.getContractFactory("Multisig");
-        multisig = (await Multisig.deploy(signerAddresses)) as Multisig;
-        await multisig.deployed();
+        const Multisig = await ethers.getContractFactory("MSExample");
+        multisigExample = (await Multisig.deploy(signerAddresses)) as MSExample;
+        await multisigExample.deployed();
     });
 
-    describe("Deployment", function () {
+    describe("Deploy", function () {
         it("Should return the correct signers array", async function () {
-            for (let i = 0; i < 3; i++)
-                expect(await multisig.signers(i)).to.equal(signerAddresses[i]);
+            const signers = await ethers.getSigners();
+
+            for (let i = 0; i < signerCount; i++)
+                expect(await multisigExample.signers(i)).to
+                    .equal(signers[i].address);
         });
+    })
+
+    describe("Function sign", function () {
+        it("Should not sign twice", async function() {
+            const functionHash = ethers.utils.keccak256(abiInterface.encodeFunctionData("helloWorld", []));
+            const signers = await ethers.getSigners();
+
+            expect(await multisigExample.connect(signers[0]).signCall(functionHash))
+                .to.not.be.reverted;
+            await expect(multisigExample.connect(signers[0]).signCall(functionHash))
+                .to.be.revertedWithCustomError(
+                    multisigExample, 
+                    "AlreadySignedCall"
+                );
+        })
+        it("Should revert invalid signer", async function() {
+            const functionHash = ethers.utils.keccak256(abiInterface.encodeFunctionData("helloWorld", []));
+            const signers = await ethers.getSigners();
+
+            await expect(multisigExample.connect(signers[signerCount]).signCall(functionHash))
+                .to.be.revertedWithCustomError(
+                    multisigExample, 
+                    "InvalidSigner"
+                );
+        })
+        it("Should return Hello World string after signatures", async function() {
+            const functionHash = ethers.utils.keccak256(abiInterface.encodeFunctionData("helloWorld", []));
+            const signers = await ethers.getSigners();
+
+            for (let i = 0; i < signerCount - 1; i++) {
+                expect(await multisigExample.connect(signers[i]).signCall(functionHash))
+                .to.not.be.reverted;
+            }
+            // // Need to return the function value
+            // expect(await multisigExample.connect(signers[signerCount - 1]).signCall(functionHash))
+            // .to.not.be.reverted;
+        })
+        it("Should revert direct call", async function() {
+            const signers = await ethers.getSigners();
+
+            await expect(multisigExample.connect(signers[0]).helloWorld())
+                .to.be.revertedWithCustomError(
+                    multisigExample, 
+                    'MultisigRequired'
+                );
+        })
     });
 });
