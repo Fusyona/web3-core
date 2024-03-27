@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/Fusyona/web3-core#readme",
   "devDependencies": {
+    "@commitlint/cli": "^19.1.0",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
@@ -66,8 +67,10 @@
 },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
+    "postinstall": "pnpm gitconfig",
     "compile": "pnpm hardhat compile",
     "test": "pnpm hardhat test",
-    "prepare": "pnpm tsc"
+    "prepublishOnly": "pnpm tsc",
+    "gitconfig": "git config core.hooksPath .githooks"
   }
 }
