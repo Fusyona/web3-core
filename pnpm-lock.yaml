@@ -46,21 +46,6 @@ devDependencies:
   '@typechain/hardhat':
     specifier: ^6.1.6
     version: 6.1.6(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2)(@typechain/ethers-v5@10.2.1)(ethers@5.7.2)(hardhat@2.21.0)(typechain@8.3.2)
-  '@types/chai':
-    specifier: ^4.3.5
-    version: 4.3.12
-  '@types/dotenv':
-    specifier: ^8.2.0
-    version: 8.2.0
-  '@types/mocha':
-    specifier: ^10.0.1
-    version: 10.0.6
-  '@types/node':
-    specifier: ^20.1.2
-    version: 20.11.27
-  '@types/sinon-chai':
-    specifier: ^3.2.3
-    version: 3.2.12
   chai:
     specifier: ^4.3.7
     version: 4.4.1
@@ -1519,13 +1504,6 @@ packages:
     resolution: {integrity: sha512-loB369iXNmAZglwWATL+WRe+CRMmmBPtpolYzIebFaX4YA3x+BEfLqhUAV9WanycKI3TG1IMr5bMJDajDKLlUQ==}
     dependencies:
       '@types/node': 20.11.27
-    dev: true
-
-  /@types/dotenv@8.2.0:
-    resolution: {integrity: sha512-ylSC9GhfRH7m1EUXBXofhgx4lUWmFeQDINW5oLuS+gxWdfUeW4zJdeVTYVkexEW+e2VUvlZR2kGnGGipAWR7kw==}
-    deprecated: This is a stub types definition. dotenv provides its own type definitions, so you do not need this installed.
-    dependencies:
-      dotenv: 16.4.5
     dev: true
 
   /@types/form-data@0.0.33:
