@@ -27,7 +27,6 @@
   "homepage": "https://github.com/Fusyona/web3-core#readme",
   "devDependencies": {
     "@commitlint/cli": "^19.1.0",
-    "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@0.3.0-beta.13",
@@ -55,8 +54,8 @@
     "ts-node": "^10.9.1",
     "typechain": "^8.1.1",
     "typescript": "^5.0.4"
-},
-"dependencies": {
+  },
+  "dependencies": {
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
     "@uniswap/lib": "4.0.1-alpha",
@@ -64,7 +63,7 @@
     "@uniswap/v2-periphery": "1.1.0-beta.0",
     "bignumber.js": "^9.1.2",
     "ethers": "^5.7.2"
-},
+  },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "postinstall": "pnpm gitconfig",
