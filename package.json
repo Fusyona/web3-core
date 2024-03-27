@@ -41,9 +41,7 @@
   "dependencies": {
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
-    "@uniswap/lib": "4.0.1-alpha",
-    "bignumber.js": "^9.1.2",
-    "ethers": "^5.7.2"
+    "bignumber.js": "^9.1.2"
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
