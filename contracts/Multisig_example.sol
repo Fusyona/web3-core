@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.24;
 
-import "../Multisig.sol";
+import "./Multisig.sol";
 
 contract MSExample is Multisig {
     constructor(address[] memory signers) Multisig(signers) {}
