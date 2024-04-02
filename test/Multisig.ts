@@ -54,7 +54,7 @@ describe("Multisig", function () {
                     "InvalidSigner"
                 );
         })
-        it("Should return Hello World string after signatures", async function() {
+        it("Should emit CallExecuted event", async function() {
             const functionHash = ethers.utils.keccak256(abiInterface.encodeFunctionData("helloWorld", []));
             const signers = await ethers.getSigners();
 
@@ -62,9 +62,12 @@ describe("Multisig", function () {
                 expect(await multisigExample.connect(signers[i]).signCall(functionHash))
                 .to.not.be.reverted;
             }
-            // // Need to return the function value
-            // expect(await multisigExample.connect(signers[signerCount - 1]).signCall(functionHash))
-            // .to.not.be.reverted;
+            // Need to return the function value
+            expect(await multisigExample.connect(signers[signerCount - 1]).signCall(functionHash))
+            .to.emit(
+                multisigExample,
+                "CallExecuted"
+            );
         })
         it("Should revert direct call", async function() {
             const signers = await ethers.getSigners();
