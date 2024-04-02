@@ -1,13 +1,13 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { MSExample } from "../typechain-types/Multisig_example.sol";
+import { abi as MSExampleAbi } from "../artifacts/contracts/Multisig_example.sol/MSExample.json" ;
+import { MSExample } from "../typechain-types" ;
 
 describe("Multisig", function () {
     let multisigExample: MSExample;
 
     const signerCount = 3;
-    const ABI = ["function helloWorld()"];
-    const abiInterface = new ethers.utils.Interface(ABI);
+    const abiInterface = new ethers.utils.Interface(MSExampleAbi);
 
     beforeEach(async () => {
         const signers = await ethers.getSigners()
@@ -55,7 +55,7 @@ describe("Multisig", function () {
                 );
         })
         it("Should emit CallExecuted event", async function() {
-            const functionHash = ethers.utils.keccak256(abiInterface.encodeFunctionData("helloWorld", []));
+            const functionHash = abiInterface.encodeFunctionData("helloWorld", []);
             const signers = await ethers.getSigners();
 
             for (let i = 0; i < signerCount - 1; i++) {
