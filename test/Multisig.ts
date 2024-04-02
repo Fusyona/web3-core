@@ -33,37 +33,37 @@ describe("Multisig", function () {
 
     describe("Function sign", function () {
         it("Should not sign twice", async function() {
-            const functionHash = ethers.utils.keccak256(abiInterface.encodeFunctionData("helloWorld", []));
+            const functionData = abiInterface.encodeFunctionData("helloWorld", []);
             const signers = await ethers.getSigners();
 
-            expect(await multisigExample.connect(signers[0]).signCall(functionHash))
+            expect(await multisigExample.connect(signers[0]).signCall(functionData))
                 .to.not.be.reverted;
-            await expect(multisigExample.connect(signers[0]).signCall(functionHash))
+            await expect(multisigExample.connect(signers[0]).signCall(functionData))
                 .to.be.revertedWithCustomError(
                     multisigExample, 
                     "AlreadySignedCall"
                 );
         })
         it("Should revert invalid signer", async function() {
-            const functionHash = ethers.utils.keccak256(abiInterface.encodeFunctionData("helloWorld", []));
+            const functionData = abiInterface.encodeFunctionData("helloWorld", []);
             const signers = await ethers.getSigners();
 
-            await expect(multisigExample.connect(signers[signerCount]).signCall(functionHash))
+            await expect(multisigExample.connect(signers[signerCount]).signCall(functionData))
                 .to.be.revertedWithCustomError(
                     multisigExample, 
                     "InvalidSigner"
                 );
         })
         it("Should emit CallExecuted event", async function() {
-            const functionHash = abiInterface.encodeFunctionData("helloWorld", []);
+            const functionData = abiInterface.encodeFunctionData("helloWorld", []);
             const signers = await ethers.getSigners();
 
             for (let i = 0; i < signerCount - 1; i++) {
-                expect(await multisigExample.connect(signers[i]).signCall(functionHash))
+                expect(await multisigExample.connect(signers[i]).signCall(functionData))
                 .to.not.be.reverted;
             }
             // Need to return the function value
-            expect(await multisigExample.connect(signers[signerCount - 1]).signCall(functionHash))
+            expect(await multisigExample.connect(signers[signerCount - 1]).signCall(functionData))
             .to.emit(
                 multisigExample,
                 "CallExecuted"
