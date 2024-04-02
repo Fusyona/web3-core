@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.24;
 
+import {Address} from "@openzeppelin/contracts/utils/Address.sol";
+
 contract Multisig {
     uint8 constant SIGN_COUNT = 3;
 
@@ -13,7 +15,7 @@ contract Multisig {
     error AlreadySignedCall(address signer, bytes32 call);
 
     event CallSigned(address signer, bytes32 call);
-    event CallExecuted(bytes32 data);
+    event CallExecuted(bytes32 paramsHash, bytes result);
     
     constructor(address[] memory _signers) {
         signers = _signers;
@@ -65,11 +67,10 @@ contract Multisig {
         uint8 signatureCount = _getSignatureCount(data);
 
         if (signatureCount + 1 >= SIGN_COUNT) {
-            (bool success, ) = address(this).call(funcData);
+            // (bool success, bytes memory result) = address(this).call(funcData);
+            bytes memory result = Address.functionCall(address(this), funcData);
 
-            if (!success) revert InvalidCall(funcData);
-
-            emit CallExecuted(data);
+            emit CallExecuted(data, result);
 
             for (uint8 i; i < SIGN_COUNT; ++i) {
                 delete signatures[data][i];
