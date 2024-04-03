@@ -1,6 +1,12 @@
-node_modules/
-data/
-typechain-types/
+.env
+coverage.json
+
 artifacts/
-dist/
 cache/
+coverage/
+data/
+dist/
+node_modules/
+/cache
+typechain/
+typechain-types/
