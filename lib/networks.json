@@ -12,6 +12,11 @@
         "chainId": 841,
         "explorerUrl": "https://explorerUrl.mainnet.taraxa.io/"
     },
+    "telos": {
+        "rpcUrl": "https://mainnet.telos.net/evm",
+        "chainId": 40,
+        "explorerUrl": "https://www.teloscan.io"
+    },
     "coredao" : {
         "rpcUrl": "https://rpc.coredao.org/",
         "chainId": 1116,
@@ -31,6 +36,11 @@
         "rpcUrl": "https://rpc.testnet.taraxa.io/",
         "chainId": 842,
         "explorerUrl": "https://explorerUrl.testnet.taraxa.io/"
+    },
+    "telos-testnet": {
+        "rpcUrl": "https://testnet.telos.net/evm",
+        "chainId": 41,
+        "explorerUrl": "https://testnet.teloscan.io/"
     },
     "coredao-testnet" : {
         "rpcUrl": "https://rpc.test.btcs.network/",
