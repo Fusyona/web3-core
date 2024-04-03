@@ -11,6 +11,9 @@ dependencies:
   '@ethersproject/providers':
     specifier: ^5.7.2
     version: 5.7.2
+  '@openzeppelin/contracts':
+    specifier: ^5.0.2
+    version: 5.0.2
   '@uniswap/lib':
     specifier: 4.0.1-alpha
     version: 4.0.1-alpha
@@ -1270,6 +1273,10 @@ packages:
       ethers: 5.7.2
       hardhat: 2.21.0(ts-node@10.9.2)(typescript@5.4.2)
     dev: true
+
+  /@openzeppelin/contracts@5.0.2:
+    resolution: {integrity: sha512-ytPc6eLGcHHnapAZ9S+5qsdomhjo6QBHTDRRBFfTxXIpsicMhVPouPgmUPebZZZGX7vt9USA+Z+0M0dSVtSUEA==}
+    dev: false
 
   /@resolver-engine/core@0.3.3:
     resolution: {integrity: sha512-eB8nEbKDJJBi5p5SrvrvILn4a0h42bKtbCTri3ZxCGt6UvoQyp7HnGOfki944bUjBSHKK3RvgfViHn+kqdXtnQ==}
