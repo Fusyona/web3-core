@@ -9,21 +9,22 @@ describe("Multisig", function () {
     const signerCount = 3;
     const abiInterface = new ethers.Interface(MSExampleAbi);
 
-    beforeEach(async () => {
-        const signers = await ethers.getSigners()
-        let signerAddresses: string[] = [] ;
+    let signers : any ;
+    let signerAddresses: string[] = [] ;
 
+    before(async () => {
+        signers = await ethers.getSigners()
         for (let i = 0; i < signerCount; i++) {
             signerAddresses.push(signers[i].address);
         }
+    })
 
+    beforeEach(async () => {
         multisigExample = await ethers.deployContract("MSExample", [signerAddresses]) as MSExample;
     });
 
     describe("Deploy", function () {
         it("Should return the correct signers array", async function () {
-            const signers = await ethers.getSigners();
-
             for (let i = 0; i < signerCount; i++)
                 expect(await multisigExample.signers(i)).to
                     .equal(signers[i].address);
@@ -33,7 +34,6 @@ describe("Multisig", function () {
     describe("Function sign", function () {
         it("Should not sign twice", async function() {
             const functionData = abiInterface.encodeFunctionData("helloWorld", []);
-            const signers = await ethers.getSigners();
 
             expect(await multisigExample.connect(signers[0]).signCall(functionData))
                 .to.not.be.reverted;
@@ -45,7 +45,6 @@ describe("Multisig", function () {
         })
         it("Should revert invalid signer", async function() {
             const functionData = abiInterface.encodeFunctionData("helloWorld", []);
-            const signers = await ethers.getSigners();
 
             await expect(multisigExample.connect(signers[signerCount]).signCall(functionData))
                 .to.be.revertedWithCustomError(
@@ -55,7 +54,6 @@ describe("Multisig", function () {
         })
         it("Should emit CallExecuted event", async function() {
             const functionData = abiInterface.encodeFunctionData("helloWorld", []);
-            const signers = await ethers.getSigners();
 
             for (let i = 0; i < signerCount - 1; i++) {
                 expect(await multisigExample.connect(signers[i]).signCall(functionData))
@@ -69,7 +67,6 @@ describe("Multisig", function () {
             );
         })
         it("Should revert direct call", async function() {
-            const signers = await ethers.getSigners();
 
             await expect(multisigExample.connect(signers[0]).helloWorld())
                 .to.be.revertedWithCustomError(
