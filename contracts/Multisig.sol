@@ -21,6 +21,10 @@ contract Multisig {
         signers = _signers;
     }
 
+    modifier useMultisig() {
+        _;
+    }
+
     modifier onlySigner() {
         if (!_isSigner(msg.sender)) revert InvalidSigner(msg.sender);
         _;
