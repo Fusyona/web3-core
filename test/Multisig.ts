@@ -7,18 +7,17 @@ describe("Multisig", function () {
     let multisigExample: MSExample;
 
     const signerCount = 3;
-    const abiInterface = new ethers.utils.Interface(MSExampleAbi);
+    const abiInterface = new ethers.Interface(MSExampleAbi);
 
     beforeEach(async () => {
         const signers = await ethers.getSigners()
-        let signerAddresses: string[] = [];
+        let signerAddresses: string[] = [] ;
 
         for (let i = 0; i < signerCount; i++) {
             signerAddresses.push(signers[i].address);
         }
-        const Multisig = await ethers.getContractFactory("MSExample");
-        multisigExample = (await Multisig.deploy(signerAddresses)) as MSExample;
-        await multisigExample.deployed();
+
+        multisigExample = await ethers.deployContract("MSExample", [signerAddresses]) as MSExample;
     });
 
     describe("Deploy", function () {
