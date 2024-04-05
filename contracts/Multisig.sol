@@ -47,7 +47,8 @@ contract Multisig {
     }
 
     function _isSigner(address addr) internal view returns (bool) {
-        for (uint i; i < signers.length; ++i) {
+        uint256 signersLength = signers.length;
+        for (uint256 i; i < signersLength; ++i) {
             if (signers[i] == addr) return true; 
         }
 
