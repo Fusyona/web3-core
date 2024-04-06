@@ -3,8 +3,9 @@ pragma solidity 0.8.25;
 
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
+uint8 constant SIGN_COUNT = 3;
+
 contract Multisig {
-    uint8 constant SIGN_COUNT = 3;
 
     address[] public signers;
     mapping(bytes32 functionSelector => address[SIGN_COUNT] signers) signatures;
@@ -18,10 +19,6 @@ contract Multisig {
     event CallExecuted(bytes32 paramsHash, bytes result);
     event CallExecuted(bytes32 paramsHash);
     
-    constructor(address[] memory _signers) {
-        signers = _signers;
-    }
-
     modifier useMultisig(bytes memory funcData) {
         bytes32 data = keccak256(funcData);
 
@@ -53,6 +50,10 @@ contract Multisig {
         if (msg.sender != address(this)) revert MultisigRequired();    
         _;
     }
+    
+    constructor(address[] memory _signers) {
+        signers = _signers;
+    }
 
     function _isOnCallStack(bytes32 data, address signer) internal view returns (bool) {
         address[SIGN_COUNT] memory callSigners = signatures[data];
@@ -65,7 +66,8 @@ contract Multisig {
     }
 
     function _isSigner(address addr) internal view returns (bool) {
-        for (uint i; i < signers.length; ++i) {
+        uint256 signersLength = signers.length;
+        for (uint256 i; i < signersLength; ++i) {
             if (signers[i] == addr) return true; 
         }
 

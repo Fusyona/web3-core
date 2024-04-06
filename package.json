@@ -44,5 +44,8 @@
         "test": "pnpm hardhat test",
         "prepublishOnly": "pnpm tsc",
         "gitconfig": "git config core.hooksPath .githooks"
+    },
+    "dependencies": {
+        "@openzeppelin/contracts": "^5.0.2"
     }
 }
