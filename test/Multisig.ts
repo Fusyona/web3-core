@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { ethers } from "hardhat";
+import {ethers} from "hardhat";
 import { abi as MSExampleAbi } from "../artifacts/contracts/Multisig_example.sol/MSExample.json" ;
 import { MSExample } from "../typechain-types" ;
 
@@ -7,7 +7,7 @@ describe("Multisig", function () {
     let multisigExample: MSExample;
 
     const signerCount = 3;
-    const abiInterface = new ethers.utils.Interface(MSExampleAbi);
+    const abiInterface = new ethers.Interface(MSExampleAbi);
 
     beforeEach(async () => {
         const signers = await ethers.getSigners()
@@ -18,7 +18,7 @@ describe("Multisig", function () {
         }
         const Multisig = await ethers.getContractFactory("MSExample");
         multisigExample = (await Multisig.deploy(signerAddresses)) as MSExample;
-        await multisigExample.deployed();
+        // await multisigExample.deployed();
     });
 
     describe("Deploy", function () {
@@ -66,7 +66,7 @@ describe("Multisig", function () {
             expect(await multisigExample.connect(signers[signerCount - 1]).signCall(functionData))
             .to.emit(
                 multisigExample,
-                "CallExecuted"
+                "CallExecuted(bytes32,bytes)"
             );
         })
         it("Should revert direct call", async function() {
@@ -79,4 +79,41 @@ describe("Multisig", function () {
                 );
         })
     });
+
+    describe("Modifier sign", function() {
+        it("Should not sign twice", async function() {
+            const signers = await ethers.getSigners();
+
+            expect(await multisigExample.connect(signers[0]).modifierHelloWorld())
+                .to.not.be.reverted;
+            await expect(multisigExample.connect(signers[0]).modifierHelloWorld())
+                .to.be.revertedWithCustomError(
+                    multisigExample, 
+                    "AlreadySignedCall"
+                );
+        })
+        it("Should revert invalid signer", async function() {
+            const signers = await ethers.getSigners();
+
+            await expect(multisigExample.connect(signers[signerCount]).modifierHelloWorld())
+                .to.be.revertedWithCustomError(
+                    multisigExample, 
+                    "InvalidSigner"
+                );
+        })
+        it("Should emit CallExecuted event", async function() {
+            const signers = await ethers.getSigners();
+
+            for (let i = 0; i < signerCount - 1; i++) {
+                expect(await multisigExample.connect(signers[i]).modifierHelloWorld())
+                .to.not.be.reverted;
+            }
+            // Need to return the function value
+            expect(await multisigExample.connect(signers[signerCount - 1]).modifierHelloWorld())
+            .to.emit(
+                multisigExample,
+                "CallExecuted(bytes32)"
+            );
+        })
+    })
 });
