@@ -14,7 +14,7 @@ contract MSExample is Multisig {
         return abi.encodeWithSignature("modifierHelloWorld()");
     }
 
-    function modifierHelloWorld() public useMultisig(_modifierHelloWorldAdapter()) returns (string memory result) {
+    function modifierHelloWorld() public onlySigner useMultisig(_modifierHelloWorldAdapter()) returns (string memory result) {
         result = "Hello World";
     }
 }
