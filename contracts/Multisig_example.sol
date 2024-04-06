@@ -9,4 +9,12 @@ contract MSExample is Multisig {
     function helloWorld() public view requireMultisig returns (string memory) {
         return "Hello World";
     }
+
+    function _modifierHelloWorldAdapter() internal pure returns (bytes memory) {
+        return abi.encodeWithSignature("modifierHelloWorld()");
+    }
+
+    function modifierHelloWorld() public useMultisig(_modifierHelloWorldAdapter()) returns (string memory result) {
+        result = "Hello World";
+    }
 }

@@ -16,13 +16,32 @@ contract Multisig {
 
     event CallSigned(address signer, bytes32 call);
     event CallExecuted(bytes32 paramsHash, bytes result);
+    event CallExecuted(bytes32 paramsHash);
     
     constructor(address[] memory _signers) {
         signers = _signers;
     }
 
-    modifier useMultisig() {
-        _;
+    modifier useMultisig(bytes memory funcData) {
+        bytes32 data = keccak256(funcData);
+
+        if (_isOnCallStack(data, msg.sender)) revert AlreadySignedCall(msg.sender, data);
+
+        uint8 signatureCount = _getSignatureCount(data);
+
+        if (signatureCount + 1 >= SIGN_COUNT) {
+            for (uint8 i; i < SIGN_COUNT; ++i) {
+                delete signatures[data][i];
+            }
+
+            _;
+
+            emit CallExecuted(data);
+        } else {
+            signatures[data][signatureCount] = msg.sender;
+
+            emit CallSigned(msg.sender, data);
+        }
     }
 
     modifier onlySigner() {
