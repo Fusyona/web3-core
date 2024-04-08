@@ -6,7 +6,7 @@ import "./Multisig.sol";
 contract MSExample is Multisig {
     constructor(address[] memory signers) Multisig(signers) {}
 
-    function helloWorld() public view requireMultisig returns (string memory) {
+    function helloWorld() public view onlyMultisig returns (string memory) {
         return "Hello World";
     }
 
