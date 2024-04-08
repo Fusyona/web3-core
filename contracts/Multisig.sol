@@ -52,15 +52,13 @@ contract Multisig {
 
     function signCall(bytes calldata funcData) public onlySigner {
         bytes32 callHash = keccak256(funcData);
-
         if (_isOnCallStack(callHash, msg.sender)) revert AlreadySignedCall(msg.sender, callHash);
-
-        emit CallSigned(msg.sender, callHash);
         
         uint8 signatureCount = _getSignatureCount(callHash);
 
         if (signatureCount + 1 < SIGN_COUNT) {
             signatures[callHash][signatureCount] = msg.sender;
+            emit CallSigned(msg.sender, callHash);
         } else {
             _cleanSignatures(callHash);
             bytes memory result = Address.functionCall(address(this), funcData);
