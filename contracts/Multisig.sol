@@ -10,14 +10,14 @@ contract Multisig {
     address[] public signers;
     mapping(bytes32 functionSelector => address[SIGN_COUNT] signers) signatures;
 
+    event CallSigned(address signer, bytes32 call);
+    event CallExecuted(bytes32 paramsHash, bytes result);
+    event CallExecuted(bytes32 paramsHash);
+
     error InvalidSigner(address signer);
     error InvalidCall(bytes data);
     error MultisigRequired();
     error AlreadySignedCall(address signer, bytes32 call);
-
-    event CallSigned(address signer, bytes32 call);
-    event CallExecuted(bytes32 paramsHash, bytes result);
-    event CallExecuted(bytes32 paramsHash);
     
     modifier useMultisig(bytes memory funcData) {
         bytes32 data = keccak256(funcData);
@@ -55,6 +55,29 @@ contract Multisig {
         signers = _signers;
     }
 
+    function signCall(bytes calldata funcData) public onlySigner {
+        bytes32 data = keccak256(funcData);
+
+        if (_isOnCallStack(data, msg.sender)) revert AlreadySignedCall(msg.sender, data);
+
+        emit CallSigned(msg.sender, data);
+        
+        uint8 signatureCount = _getSignatureCount(data);
+
+        if (signatureCount + 1 >= SIGN_COUNT) {
+            // (bool success, bytes memory result) = address(this).call(funcData);
+            bytes memory result = Address.functionCall(address(this), funcData);
+
+            emit CallExecuted(data, result);
+
+            for (uint8 i; i < SIGN_COUNT; ++i) {
+                delete signatures[data][i];
+            }
+        } else {
+            signatures[data][signatureCount] = msg.sender;
+        }
+    }
+
     function _isOnCallStack(bytes32 data, address signer) internal view returns (bool) {
         address[SIGN_COUNT] memory callSigners = signatures[data];
 
@@ -82,26 +105,4 @@ contract Multisig {
         }
     }
 
-    function signCall(bytes calldata funcData) public onlySigner {
-        bytes32 data = keccak256(funcData);
-
-        if (_isOnCallStack(data, msg.sender)) revert AlreadySignedCall(msg.sender, data);
-
-        emit CallSigned(msg.sender, data);
-        
-        uint8 signatureCount = _getSignatureCount(data);
-
-        if (signatureCount + 1 >= SIGN_COUNT) {
-            // (bool success, bytes memory result) = address(this).call(funcData);
-            bytes memory result = Address.functionCall(address(this), funcData);
-
-            emit CallExecuted(data, result);
-
-            for (uint8 i; i < SIGN_COUNT; ++i) {
-                delete signatures[data][i];
-            }
-        } else {
-            signatures[data][signatureCount] = msg.sender;
-        }
-    }
 }
