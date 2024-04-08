@@ -27,12 +27,8 @@ contract Multisig {
         uint8 signatureCount = _getSignatureCount(data);
 
         if (signatureCount + 1 >= SIGN_COUNT) {
-            for (uint8 i; i < SIGN_COUNT; ++i) {
-                delete signatures[data][i];
-            }
-
+            _cleanSignatures(data);
             _;
-
             emit CallExecuted(data);
         } else {
             signatures[data][signatureCount] = msg.sender;
@@ -65,14 +61,9 @@ contract Multisig {
         uint8 signatureCount = _getSignatureCount(data);
 
         if (signatureCount + 1 >= SIGN_COUNT) {
-            // (bool success, bytes memory result) = address(this).call(funcData);
+            _cleanSignatures(data);
             bytes memory result = Address.functionCall(address(this), funcData);
-
             emit CallExecuted(data, result);
-
-            for (uint8 i; i < SIGN_COUNT; ++i) {
-                delete signatures[data][i];
-            }
         } else {
             signatures[data][signatureCount] = msg.sender;
         }
@@ -102,6 +93,12 @@ contract Multisig {
 
         for (uint8 i; i < SIGN_COUNT; ++i) {
             if (callSigners[i] != address(0)) ++count;
+        }
+    }
+
+    function _cleanSignatures(bytes32 data) internal {
+        for (uint8 i; i < SIGN_COUNT; ++i) {
+            delete signatures[data][i];
         }
     }
 
