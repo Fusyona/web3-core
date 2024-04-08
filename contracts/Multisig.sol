@@ -46,7 +46,7 @@ contract Multisig {
         _;
     }
 
-    modifier requireMultisig() {
+    modifier onlyMultisig() {
         if (msg.sender != address(this)) revert MultisigRequired();    
         _;
     }
