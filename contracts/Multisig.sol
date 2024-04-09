@@ -76,10 +76,10 @@ contract Multisig {
         return false;
     }
 
-    function _isSigner(address signer) internal view returns (bool) {
+    function _isSigner(address caller) internal view returns (bool) {
         uint256 signersLength = signers.length;
         for (uint256 i; i < signersLength; ++i) {
-            if (signers[i] == signer) return true; 
+            if (signers[i] == caller) return true; 
         }
 
         return false;
