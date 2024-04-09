@@ -20,19 +20,19 @@ contract Multisig {
     error AlreadySignedCall(address signer, bytes32 callHash);
     
     modifier useMultisig(bytes memory funcData) {
-        bytes32 data = keccak256(funcData);
+        bytes32 callHash = keccak256(funcData);
 
-        if (_isOnCallStack(data, msg.sender)) revert AlreadySignedCall(msg.sender, data);
+        if (_isOnCallStack(callHash, msg.sender)) revert AlreadySignedCall(msg.sender, callHash);
 
-        uint8 signatureCount = _getSignatureCount(data);
+        uint8 signatureCount = _getSignatureCount(callHash);
 
         if (signatureCount + 1 < SIGN_COUNT) {
-            signatures[data][signatureCount] = msg.sender;
-            emit CallSigned(msg.sender, data);
+            signatures[callHash][signatureCount] = msg.sender;
+            emit CallSigned(msg.sender, callHash);
         } else {
-            _cleanSignatures(data);
+            _cleanSignatures(callHash);
             _;
-            emit CallExecuted(data);
+            emit CallExecuted(callHash);
         }
     }
 
