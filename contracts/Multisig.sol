@@ -27,8 +27,7 @@ contract Multisig {
         uint8 signatureCount = _getSignatureCount(callHash);
 
         if (signatureCount + 1 < SIGN_COUNT) {
-            signatures[callHash][signatureCount] = msg.sender;
-            emit CallSigned(msg.sender, callHash);
+            _addCallSigner(callHash, msg.sender, signatureCount);
         } else {
             _cleanSignatures(callHash);
             _;
@@ -97,6 +96,11 @@ contract Multisig {
         for (uint8 i; i < SIGN_COUNT; ++i) {
             delete signatures[callHash][i];
         }
+    }
+
+    function _addCallSigner(bytes32 callHash, address signer, uint8 signCount) internal {
+        signatures[callHash][signCount] = signer;
+        emit CallSigned(signer, callHash);
     }
 
 }
