@@ -2,7 +2,8 @@
     "name": "@fusyona/web3-core",
     "version": "0.4.0",
     "description": "Fusyona web3 tools library.",
-    "main": "index.js",
+    "main": "lib/main.js",
+    "types": "lib/main.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/Fusyona/web3-core"
