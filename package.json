@@ -43,5 +43,8 @@
         "test": "pnpm hardhat test",
         "prepublishOnly": "pnpm tsc",
         "gitconfig": "git config core.hooksPath .githooks"
+    },
+    "dependencies": {
+        "ethers": "^6.11.1"
     }
 }
