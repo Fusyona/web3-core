@@ -1,7 +1,6 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "hardhat-deploy";
-import "@nomiclabs/hardhat-ethers";
 import "hardhat-inspect";
 import "@nomiclabs/hardhat-solhint"
 
