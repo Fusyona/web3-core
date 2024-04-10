@@ -78,7 +78,7 @@ export class NetworkConfig {
 
 }
 
-export default class NetworkConfigs {
+export class NetworkConfigs {
 
     constructor(public accounts: HttpNetworkAccountsUserConfig) {
         this.accounts = accounts ;
