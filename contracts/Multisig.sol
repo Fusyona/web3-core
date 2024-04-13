@@ -88,10 +88,6 @@ contract Multisig {
     function _getSignatureCount(bytes32 callHash) internal view returns (uint256 count) {
         address[] storage callSigners = signatures[callHash];
 
-        // for (uint256 i; i < SIGN_COUNT; ++i) {
-        //     if (callSigners[i] != address(0)) ++count;
-        // }
-
         count = callSigners.length;
     }
 
