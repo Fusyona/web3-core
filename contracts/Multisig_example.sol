@@ -4,7 +4,7 @@ pragma solidity 0.8.25;
 import "./Multisig.sol";
 
 contract MSExample is Multisig {
-    constructor(address[] memory signers) Multisig(signers) {}
+    constructor(address[] memory signers, uint256 signCount) Multisig(signers, signCount) {}
 
     function helloWorld() public view onlyMultisig returns (string memory) {
         return "Hello World";

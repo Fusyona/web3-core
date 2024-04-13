@@ -26,7 +26,7 @@ contract Multisig {
         uint256 signatureCount = _getSignatureCount(callHash);
 
         if (signatureCount + 1 < SIGN_COUNT) {
-            _addCallSigner(callHash, msg.sender, signatureCount);
+            _addCallSigner(callHash, msg.sender);
         } else {
             _cleanSignatures(callHash);
             _;
@@ -56,7 +56,7 @@ contract Multisig {
         uint256 signatureCount = _getSignatureCount(callHash);
 
         if (signatureCount + 1 < SIGN_COUNT) {
-            signatures[callHash][signatureCount] = msg.sender;
+            _addCallSigner(callHash, msg.sender);
             emit CallSigned(msg.sender, callHash);
         } else {
             _cleanSignatures(callHash);
@@ -66,7 +66,7 @@ contract Multisig {
     }
 
     function _isOnCallStack(bytes32 callHash, address signer) internal view returns (bool) {
-        address[] storage callSigners = signatures[callHash];
+        address[] memory callSigners = signatures[callHash];
 
         for (uint256 i; i < callSigners.length; ++i) {
             if (callSigners[i] == signer) return true;
@@ -77,6 +77,7 @@ contract Multisig {
 
     function _isSigner(address caller) internal view returns (bool) {
         uint256 signersLength = signers.length;
+
         for (uint256 i; i < signersLength; ++i) {
             if (signers[i] == caller) return true; 
         }
@@ -87,19 +88,23 @@ contract Multisig {
     function _getSignatureCount(bytes32 callHash) internal view returns (uint256 count) {
         address[] storage callSigners = signatures[callHash];
 
-        for (uint256 i; i < SIGN_COUNT; ++i) {
-            if (callSigners[i] != address(0)) ++count;
-        }
+        // for (uint256 i; i < SIGN_COUNT; ++i) {
+        //     if (callSigners[i] != address(0)) ++count;
+        // }
+
+        count = callSigners.length;
     }
 
     function _cleanSignatures(bytes32 callHash) internal {
-        for (uint256 i; i < SIGN_COUNT; ++i) {
+        uint256 signCount = _getSignatureCount(callHash);
+
+        for (uint256 i; i < signCount; ++i) {
             delete signatures[callHash][i];
         }
     }
 
-    function _addCallSigner(bytes32 callHash, address signer, uint256 signCount) internal {
-        signatures[callHash][signCount] = signer;
+    function _addCallSigner(bytes32 callHash, address signer) internal {
+        signatures[callHash].push(signer);
         emit CallSigned(signer, callHash);
     }
 }
