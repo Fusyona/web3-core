@@ -6,7 +6,7 @@ import { MSExample } from "../typechain-types" ;
 describe("Multisig", function () {
     let multisigExample: MSExample;
 
-    const signerCount = 3;
+    const signerCount = 4;
     const abiInterface = new ethers.Interface(MSExampleAbi);
 
     let signers : any ;
@@ -20,7 +20,7 @@ describe("Multisig", function () {
     })
 
     beforeEach(async () => {
-        multisigExample = await ethers.deployContract("MSExample", [signerAddresses]) as MSExample;
+        multisigExample = await ethers.deployContract("MSExample", [signerAddresses, signerCount]) as MSExample;
     });
 
     describe("Deploy", function () {
