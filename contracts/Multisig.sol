@@ -7,7 +7,7 @@ import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 contract Multisig {
     uint256 immutable SIGN_COUNT;  
     address[] public signers;
-    mapping(bytes32 functionSelector => address[] signers) signatures;
+    mapping(bytes32 functionSelector => address[] functionSigners) signatures;
 
     event CallSigned(address signer, bytes32 callHash);
     event CallExecuted(bytes32 paramsHash, bytes result);
@@ -100,7 +100,17 @@ contract Multisig {
     }
 
     function _addCallSigner(bytes32 callHash, address signer) internal {
-        signatures[callHash].push(signer);
+        uint256 signCount = _getSignatureCount(callHash);
+
+        if (signCount == 0) {
+            address[] memory _signers = new address[](SIGN_COUNT);
+            _signers[0] = signer;
+            signatures[callHash] = _signers;
+            emit CallSigned(signer, callHash);
+            return;
+        }
+
+        signatures[callHash][signCount] = signer;
         emit CallSigned(signer, callHash);
     }
 }
