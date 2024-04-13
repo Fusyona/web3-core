@@ -1,9 +1,10 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
-import "hardhat-deploy";
-import "@nomiclabs/hardhat-ethers";
-import "hardhat-inspect";
 import "@nomiclabs/hardhat-solhint"
+import "hardhat-deploy";
+import "hardhat-contract-sizer"
+import "hardhat-inspect";
+import "hardhat-neovim"
 
 
 const config: HardhatUserConfig = {
