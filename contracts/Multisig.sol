@@ -38,31 +38,10 @@ contract Multisig {
         if (!_isSigner(msg.sender)) revert InvalidSigner(msg.sender);
         _;
     }
-
-    modifier onlyMultisig() {
-        if (msg.sender != address(this)) revert MultisigRequired();    
-        _;
-    }
     
     constructor(address[] memory _signers, uint256 _signCount) {
         signers = _signers;
         SIGN_COUNT = _signCount;
-    }
-
-    function signCall(bytes calldata funcData) public onlySigner {
-        bytes32 callHash = keccak256(funcData);
-        if (_isOnCallStack(callHash, msg.sender)) revert AlreadySignedCall(msg.sender, callHash);
-        
-        uint256 signatureCount = _getSignatureCount(callHash);
-
-        if (signatureCount + 1 < SIGN_COUNT) {
-            _addCallSigner(callHash, msg.sender);
-            emit CallSigned(msg.sender, callHash);
-        } else {
-            _cleanSignatures(callHash);
-            bytes memory result = Address.functionCall(address(this), funcData);
-            emit CallExecuted(callHash, result);
-        }
     }
 
     function _isOnCallStack(bytes32 callHash, address signer) internal view returns (bool) {

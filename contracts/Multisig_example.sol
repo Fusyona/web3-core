@@ -6,15 +6,12 @@ import "./Multisig.sol";
 contract MSExample is Multisig {
     constructor(address[] memory signers, uint256 signCount) Multisig(signers, signCount) {}
 
-    function helloWorld() public view onlyMultisig returns (string memory) {
-        return "Hello World";
-    }
-
-    function _modifierHelloWorldAdapter() internal pure returns (bytes memory) {
-        return abi.encodeWithSignature("modifierHelloWorld()");
-    }
-
-    function modifierHelloWorld() public onlySigner useMultisig(_modifierHelloWorldAdapter()) returns (string memory result) {
+    function modifierHelloWorld() 
+        public 
+        onlySigner
+        useMultisig(abi.encodeWithSignature("modifierHelloWorld()")) 
+        returns (string memory result) 
+    {
         result = "Hello World";
     }
 }
