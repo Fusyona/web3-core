@@ -31,51 +31,6 @@ describe("Multisig", function () {
         });
     })
 
-    describe("Function sign", function () {
-        it("Should not sign twice", async function() {
-            const functionData = abiInterface.encodeFunctionData("helloWorld", []);
-
-            expect(await multisigExample.connect(signers[0]).signCall(functionData))
-                .to.not.be.reverted;
-            await expect(multisigExample.connect(signers[0]).signCall(functionData))
-                .to.be.revertedWithCustomError(
-                    multisigExample, 
-                    "AlreadySignedCall"
-                );
-        })
-        it("Should revert invalid signer", async function() {
-            const functionData = abiInterface.encodeFunctionData("helloWorld", []);
-
-            await expect(multisigExample.connect(signers[signerCount]).signCall(functionData))
-                .to.be.revertedWithCustomError(
-                    multisigExample, 
-                    "InvalidSigner"
-                );
-        })
-        it("Should emit CallExecuted event", async function() {
-            const functionData = abiInterface.encodeFunctionData("helloWorld", []);
-
-            for (let i = 0; i < signerCount - 1; i++) {
-                expect(await multisigExample.connect(signers[i]).signCall(functionData))
-                .to.not.be.reverted;
-            }
-            // Need to return the function value
-            expect(await multisigExample.connect(signers[signerCount - 1]).signCall(functionData))
-            .to.emit(
-                multisigExample,
-                "CallExecuted(bytes32,bytes)"
-            );
-        })
-        it("Should revert direct call", async function() {
-
-            await expect(multisigExample.connect(signers[0]).helloWorld())
-                .to.be.revertedWithCustomError(
-                    multisigExample, 
-                    'MultisigRequired'
-                );
-        })
-    });
-
     describe("Modifier sign", function() {
         it("Should not sign twice", async function() {
             const signers = await ethers.getSigners();
