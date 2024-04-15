@@ -36,7 +36,7 @@ devDependencies:
     version: 0.12.2
   hardhat-inspect:
     specifier: github:TheSnakeWitcher/hardhat-inspect
-    version: github.com/TheSnakeWitcher/hardhat-inspect/db37d5f0d8278fd12756d776a72f8acbf765974c(hardhat@2.22.2)
+    version: github.com/TheSnakeWitcher/hardhat-inspect/adf95d3af0363b9d719f9879626dc65f98f258cd(hardhat@2.22.2)
   hardhat-neovim:
     specifier: github:TheSnakeWitcher/hardhat-neovim
     version: github.com/TheSnakeWitcher/hardhat-neovim/b12e2a562b5aaae24e2e8edf0337037e810860fa
@@ -4762,9 +4762,9 @@ packages:
       ethers: 5.7.2
     dev: true
 
-  github.com/TheSnakeWitcher/hardhat-inspect/db37d5f0d8278fd12756d776a72f8acbf765974c(hardhat@2.22.2):
-    resolution: {tarball: https://codeload.github.com/TheSnakeWitcher/hardhat-inspect/tar.gz/db37d5f0d8278fd12756d776a72f8acbf765974c}
-    id: github.com/TheSnakeWitcher/hardhat-inspect/db37d5f0d8278fd12756d776a72f8acbf765974c
+  github.com/TheSnakeWitcher/hardhat-inspect/adf95d3af0363b9d719f9879626dc65f98f258cd(hardhat@2.22.2):
+    resolution: {tarball: https://codeload.github.com/TheSnakeWitcher/hardhat-inspect/tar.gz/adf95d3af0363b9d719f9879626dc65f98f258cd}
+    id: github.com/TheSnakeWitcher/hardhat-inspect/adf95d3af0363b9d719f9879626dc65f98f258cd
     name: hardhat-inspect
     version: 0.0.1
     requiresBuild: true
