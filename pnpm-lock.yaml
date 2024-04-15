@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@openzeppelin/contracts':
+    specifier: ^5.0.2
+    version: 5.0.2
   ethers:
     specifier: ^6.11.1
     version: 6.11.1
@@ -1001,6 +1004,10 @@ packages:
     transitivePeerDependencies:
       - typescript
     dev: true
+
+  /@openzeppelin/contracts@5.0.2:
+    resolution: {integrity: sha512-ytPc6eLGcHHnapAZ9S+5qsdomhjo6QBHTDRRBFfTxXIpsicMhVPouPgmUPebZZZGX7vt9USA+Z+0M0dSVtSUEA==}
+    dev: false
 
   /@scure/base@1.1.5:
     resolution: {integrity: sha512-Brj9FiG2W1MRQSTB212YVPRrcbjkv48FoZi/u4l/zds/ieRrqsh7aUf6CLwkAq61oKXr/ZlTzlY66gLIj3TFTQ==}

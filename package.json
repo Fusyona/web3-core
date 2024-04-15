@@ -46,6 +46,7 @@
         "gitconfig": "git config core.hooksPath .githooks"
     },
     "dependencies": {
+        "@openzeppelin/contracts": "^5.0.2",
         "ethers": "^6.11.1"
     }
 }
