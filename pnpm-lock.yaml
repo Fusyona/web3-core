@@ -34,12 +34,6 @@ devDependencies:
   hardhat-deploy:
     specifier: ^0.12.2
     version: 0.12.2
-  hardhat-inspect:
-    specifier: github:TheSnakeWitcher/hardhat-inspect
-    version: github.com/TheSnakeWitcher/hardhat-inspect/adf95d3af0363b9d719f9879626dc65f98f258cd(hardhat@2.22.2)
-  hardhat-neovim:
-    specifier: github:TheSnakeWitcher/hardhat-neovim
-    version: github.com/TheSnakeWitcher/hardhat-neovim/b12e2a562b5aaae24e2e8edf0337037e810860fa
   prettier-plugin-solidity:
     specifier: ^1.1.3
     version: 1.3.1(prettier@3.2.5)
@@ -4794,23 +4788,4 @@ packages:
       ethers: ~5.7.0
     dependencies:
       ethers: 5.7.2
-    dev: true
-
-  github.com/TheSnakeWitcher/hardhat-inspect/adf95d3af0363b9d719f9879626dc65f98f258cd(hardhat@2.22.2):
-    resolution: {tarball: https://codeload.github.com/TheSnakeWitcher/hardhat-inspect/tar.gz/adf95d3af0363b9d719f9879626dc65f98f258cd}
-    id: github.com/TheSnakeWitcher/hardhat-inspect/adf95d3af0363b9d719f9879626dc65f98f258cd
-    name: hardhat-inspect
-    version: 0.0.1
-    requiresBuild: true
-    peerDependencies:
-      hardhat: ^2.0.0
-    dependencies:
-      hardhat: 2.22.2(ts-node@10.9.2)(typescript@5.4.5)
-    dev: true
-
-  github.com/TheSnakeWitcher/hardhat-neovim/b12e2a562b5aaae24e2e8edf0337037e810860fa:
-    resolution: {tarball: https://codeload.github.com/TheSnakeWitcher/hardhat-neovim/tar.gz/b12e2a562b5aaae24e2e8edf0337037e810860fa}
-    name: hardhat-neovim
-    version: 0.0.1
-    requiresBuild: true
     dev: true
