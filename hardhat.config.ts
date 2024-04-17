@@ -3,6 +3,7 @@ import "@nomicfoundation/hardhat-toolbox";
 import "@nomiclabs/hardhat-solhint"
 import "hardhat-deploy";
 import "hardhat-contract-sizer"
+import "hardhat-inspect";
 
 
 const config: HardhatUserConfig = {

@@ -33,6 +33,7 @@
         "hardhat": "^2.22.2",
         "hardhat-contract-sizer": "^2.10.0",
         "hardhat-deploy": "^0.12.2",
+        "hardhat-inspect": "^0.1.11",
         "prettier-plugin-solidity": "^1.1.3"
     },
     "scripts": {
