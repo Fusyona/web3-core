@@ -2,6 +2,7 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "@nomiclabs/hardhat-solhint"
 import "hardhat-deploy";
+import "hardhat-deploy-ethers";
 import "hardhat-contract-sizer"
 import "hardhat-inspect";
 
