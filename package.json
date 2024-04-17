@@ -39,7 +39,6 @@
     },
     "scripts": {
         "preinstall": "npx only-allow pnpm",
-        "postinstall": "pnpm gitconfig",
         "compile": "pnpm hardhat compile",
         "test": "pnpm hardhat test",
         "prepublishOnly": "pnpm tsc",
