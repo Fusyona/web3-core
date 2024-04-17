@@ -2,9 +2,8 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "@nomiclabs/hardhat-solhint"
 import "hardhat-deploy";
-import "hardhat-contract-sizer"
-import "hardhat-inspect";
-import "hardhat-neovim"
+import "hardhat-deploy-ethers";
+import "hardhat-contract-sizer";
 
 
 const config: HardhatUserConfig = {
