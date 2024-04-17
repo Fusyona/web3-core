@@ -1,9 +1,9 @@
 {
     "name": "@fusyona/web3-core",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "description": "Fusyona web3 tools library.",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "main": "dist/lib/index.js",
+    "types": "dist/lib/index.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/Fusyona/web3-core"
@@ -40,8 +40,9 @@
     "scripts": {
         "preinstall": "npx only-allow pnpm",
         "compile": "pnpm hardhat compile",
+        "build": "tsc",
         "test": "pnpm hardhat test",
-        "prepublishOnly": "pnpm tsc",
+        "prepublishOnly": "pnpm run build",
         "gitconfig": "git config core.hooksPath .githooks"
     },
     "dependencies": {
