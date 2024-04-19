@@ -59,8 +59,22 @@ describe("Multisig", function () {
                 expect(await multisigExample.connect(signers[i]).modifierHelloWorld())
                 .to.not.be.reverted;
             }
-            // Need to return the function value
-            expect(await multisigExample.connect(signers[signerCount - 1]).modifierHelloWorld())
+
+            expect( await multisigExample.connect(signers[signerCount - 1]).modifierHelloWorld())
+            .to.emit(
+                multisigExample,
+                "CallExecuted(bytes32)"
+            );
+        })
+        it("Should emut CallExecuted on multi param call", async function() {
+            const signers = await ethers.getSigners();
+
+            for (let i = 0; i < signerCount - 1; i++) {
+                expect(await multisigExample.connect(signers[i]).sumTwoNumbers(2, 2))
+                .to.not.be.reverted;
+            }
+            
+            expect(await multisigExample.connect(signers[signerCount - 1]).sumTwoNumbers(2, 2))
             .to.emit(
                 multisigExample,
                 "CallExecuted(bytes32)"
