@@ -6,7 +6,7 @@ import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol" ;
 
 abstract contract ERC721MintScheme is ERC721 {
 
-    function mint(address receiver) internal virtual {
+    function _mintTo(address receiver) internal virtual {
         uint256 tokenId = _getNextTokenId() ;
         _checkTokenId(tokenId);
         _safeMint(receiver, tokenId) ;
