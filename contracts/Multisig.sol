@@ -3,7 +3,6 @@ pragma solidity 0.8.25;
 
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
-
 contract Multisig {
     uint256 immutable SIGN_COUNT;  
     address[] public signers;
@@ -44,6 +43,29 @@ contract Multisig {
         SIGN_COUNT = _signCount;
     }
 
+    function _addCallSigner(bytes32 callHash, address signer) internal {
+        uint256 signCount = _getSignatureCount(callHash);
+
+        if (signCount == 0) {
+            address[] memory _signers = new address[](SIGN_COUNT);
+            _signers[0] = signer;
+            signatures[callHash] = _signers;
+            emit CallSigned(signer, callHash);
+            return;
+        }
+
+        signatures[callHash][signCount] = signer;
+        emit CallSigned(signer, callHash);
+    }
+
+    function _cleanSignatures(bytes32 callHash) internal {
+        uint256 signCount = _getSignatureCount(callHash);
+
+        for (uint256 i; i < signCount; ++i) {
+            delete signatures[callHash][i];
+        }
+    }
+
     function _isOnCallStack(bytes32 callHash, address signer) internal view returns (bool) {
         address[] memory callSigners = signatures[callHash];
 
@@ -69,26 +91,4 @@ contract Multisig {
         return signatures[callHash].length;
     }
 
-    function _cleanSignatures(bytes32 callHash) internal {
-        uint256 signCount = _getSignatureCount(callHash);
-
-        for (uint256 i; i < signCount; ++i) {
-            delete signatures[callHash][i];
-        }
-    }
-
-    function _addCallSigner(bytes32 callHash, address signer) internal {
-        uint256 signCount = _getSignatureCount(callHash);
-
-        if (signCount == 0) {
-            address[] memory _signers = new address[](SIGN_COUNT);
-            _signers[0] = signer;
-            signatures[callHash] = _signers;
-            emit CallSigned(signer, callHash);
-            return;
-        }
-
-        signatures[callHash][signCount] = signer;
-        emit CallSigned(signer, callHash);
-    }
 }
