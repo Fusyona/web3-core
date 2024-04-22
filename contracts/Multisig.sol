@@ -35,7 +35,7 @@ contract Multisig {
     }
 
     modifier onlySigner() {
-        if (!_isSigner(msg.sender)) revert InvalidSigner(msg.sender);
+        _checkSigner(msg.sender);
         _;
     }
     
@@ -54,14 +54,15 @@ contract Multisig {
         return false;
     }
 
-    function _isSigner(address caller) internal view returns (bool) {
+    function _checkSigner(address caller) internal view virtual {
         uint256 signersLength = signers.length;
+        bool isSigner = false ;
 
         for (uint256 i; i < signersLength; ++i) {
-            if (signers[i] == caller) return true; 
+            if (signers[i] == caller) isSigner = true ; 
         }
 
-        return false;
+        if (!isSigner) revert InvalidSigner(caller);
     }
 
     function _getSignatureCount(bytes32 callHash) internal view returns (uint256) {
