@@ -81,7 +81,10 @@ contract Multisig {
         bool isSigner = false ;
 
         for (uint256 i; i < signersLength; ++i) {
-            if (signers[i] == caller) isSigner = true ; 
+            if (signers[i] == caller) {
+                isSigner = true ; 
+                break ;
+            }
         }
 
         if (!isSigner) revert InvalidSigner(caller);
