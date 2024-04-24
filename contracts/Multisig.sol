@@ -17,7 +17,7 @@ contract Multisig {
     error MultisigRequired();
     error AlreadySignedCall(address signer, bytes32 callHash);
     
-    modifier useMultisig(bytes memory funcData) {
+    modifier onlyMultisig(bytes memory funcData) {
         bytes32 callHash = keccak256(funcData);
 
         if (_isOnCallStack(callHash, msg.sender)) revert AlreadySignedCall(msg.sender, callHash);

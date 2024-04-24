@@ -14,7 +14,7 @@ contract MSExample is Multisig {
     function modifierHelloWorld() 
         external 
         onlySigner
-        useMultisig(abi.encodeCall(IMSExample.modifierHelloWorld, ())) 
+        onlyMultisig(abi.encodeCall(IMSExample.modifierHelloWorld, ())) 
         returns (string memory result) 
     {
         result = "Hello World";
@@ -23,7 +23,7 @@ contract MSExample is Multisig {
     function sumTwoNumbers(uint256 x, uint256 y) 
         external
         onlySigner
-        useMultisig(abi.encodeCall(IMSExample.sumTwoNumbers, (x, y)))
+        onlyMultisig(abi.encodeCall(IMSExample.sumTwoNumbers, (x, y)))
         returns (uint256 result) 
     {
         result = x + y;   
