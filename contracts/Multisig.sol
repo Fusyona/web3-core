@@ -20,7 +20,7 @@ contract Multisig {
     modifier onlyMultisig(bytes memory funcData) {
         bytes32 callHash = keccak256(funcData);
 
-        if (_isOnCallStack(callHash, msg.sender)) revert AlreadySignedCall(msg.sender, callHash);
+        if (_isSignedBy(callHash, msg.sender)) revert AlreadySignedCall(msg.sender, callHash);
 
         uint256 signatureCount = _getSignatureCount(callHash);
 
@@ -66,7 +66,7 @@ contract Multisig {
         }
     }
 
-    function _isOnCallStack(bytes32 callHash, address signer) internal view returns (bool) {
+    function _isSignedBy(bytes32 callHash, address signer) internal view returns (bool) {
         address[] memory callSigners = signatures[callHash];
 
         for (uint256 i; i < callSigners.length; ++i) {
