@@ -77,11 +77,12 @@ contract Multisig {
     }
 
     function _checkSigner(address caller) internal view virtual {
+        address[] memory callSigners = signers ;
         uint256 signersLength = signers.length;
         bool isSigner = false ;
 
         for (uint256 i; i < signersLength; ++i) {
-            if (signers[i] == caller) {
+            if (callSigners[i] == caller) {
                 isSigner = true ; 
                 break ;
             }
