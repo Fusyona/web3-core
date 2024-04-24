@@ -1,0 +1,18 @@
+{
+    "Cooldown": {},
+    "CooldownOwnable": {
+        "OwnershipTransferred": "OwnershipTransferred"
+    },
+    "CooldownParametric": {},
+    "Lock": {
+        "Withdrawal": "Withdrawal"
+    },
+    "Multisig": {
+        "CallExecuted": "CallExecuted",
+        "CallSigned": "CallSigned"
+    },
+    "CooldownExample": {},
+    "CooldownOwnableExample": {
+        "OwnershipTransferred": "OwnershipTransferred"
+    }
+}

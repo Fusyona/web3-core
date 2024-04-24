@@ -1,0 +1,31 @@
+{
+    "Cooldown": {
+        "InsufficientCooldown": "InsufficientCooldown"
+    },
+    "CooldownOwnable": {
+        "InsufficientCooldown": "InsufficientCooldown",
+        "OwnableInvalidOwner": "OwnableInvalidOwner",
+        "OwnableUnauthorizedAccount": "OwnableUnauthorizedAccount"
+    },
+    "CooldownParametric": {
+        "InsufficientCooldown": "InsufficientCooldown"
+    },
+    "Lock": {},
+    "Multisig": {
+        "AddressEmptyCode": "AddressEmptyCode",
+        "AddressInsufficientBalance": "AddressInsufficientBalance",
+        "AlreadySignedCall": "AlreadySignedCall",
+        "FailedInnerCall": "FailedInnerCall",
+        "InvalidCall": "InvalidCall",
+        "InvalidSigner": "InvalidSigner",
+        "MultisigRequired": "MultisigRequired"
+    },
+    "CooldownExample": {
+        "InsufficientCooldown": "InsufficientCooldown"
+    },
+    "CooldownOwnableExample": {
+        "InsufficientCooldown": "InsufficientCooldown",
+        "OwnableInvalidOwner": "OwnableInvalidOwner",
+        "OwnableUnauthorizedAccount": "OwnableUnauthorizedAccount"
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "Cooldown": "Cooldown",
+    "CooldownOwnable": "CooldownOwnable",
+    "CooldownParametric": "CooldownParametric",
+    "Lock": "Lock",
+    "Multisig": "Multisig",
+    "CooldownExample": "CooldownExample",
+    "CooldownOwnableExample": "CooldownOwnableExample"
+}
