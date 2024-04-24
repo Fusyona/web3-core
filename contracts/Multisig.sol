@@ -4,79 +4,95 @@ pragma solidity 0.8.25;
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
 contract Multisig {
-    uint8 constant SIGN_COUNT = 3;
-
+    uint256 immutable SIGN_COUNT;  
     address[] public signers;
-    mapping(bytes32 functionSelector => address[SIGN_COUNT] signers) signatures;
+    mapping(bytes32 functionSelector => address[] functionSigners) signatures;
+
+    event CallSigned(address signer, bytes32 callHash);
+    event CallExecuted(bytes32 paramsHash, bytes result);
+    event CallExecuted(bytes32 paramsHash);
 
     error InvalidSigner(address signer);
     error InvalidCall(bytes data);
     error MultisigRequired();
-    error AlreadySignedCall(address signer, bytes32 call);
-
-    event CallSigned(address signer, bytes32 call);
-    event CallExecuted(bytes32 paramsHash, bytes result);
+    error AlreadySignedCall(address signer, bytes32 callHash);
     
-    constructor(address[] memory _signers) {
-        signers = _signers;
+    modifier onlyMultisig(bytes memory funcData) {
+        bytes32 callHash = keccak256(funcData);
+
+        if (_isSignedBy(callHash, msg.sender)) revert AlreadySignedCall(msg.sender, callHash);
+
+        uint256 signatureCount = _getSignatureCount(callHash);
+
+        if (signatureCount + 1 < SIGN_COUNT) {
+            _addCallSigner(callHash, msg.sender);
+        } else {
+            _cleanSignatures(callHash);
+            _;
+            emit CallExecuted(callHash);
+        }
     }
 
     modifier onlySigner() {
-        if (!_isSigner(msg.sender)) revert InvalidSigner(msg.sender);
+        _checkSigner(msg.sender);
         _;
     }
-
-    modifier requireMultisig() {
-        if (msg.sender != address(this)) revert MultisigRequired();    
-        _;
+    
+    constructor(address[] memory _signers, uint256 _signCount) {
+        signers = _signers;
+        SIGN_COUNT = _signCount;
     }
 
-    function _isOnCallStack(bytes32 data, address signer) internal view returns (bool) {
-        address[SIGN_COUNT] memory callSigners = signatures[data];
+    function _addCallSigner(bytes32 callHash, address signer) internal {
+        uint256 signCount = _getSignatureCount(callHash);
 
-        for (uint8 i; i < callSigners.length; ++i) {
+        if (signCount == 0) {
+            address[] memory _signers = new address[](SIGN_COUNT);
+            _signers[0] = signer;
+            signatures[callHash] = _signers;
+            emit CallSigned(signer, callHash);
+            return;
+        }
+
+        signatures[callHash][signCount] = signer;
+        emit CallSigned(signer, callHash);
+    }
+
+    function _cleanSignatures(bytes32 callHash) internal {
+        uint256 signCount = _getSignatureCount(callHash);
+
+        for (uint256 i; i < signCount; ++i) {
+            delete signatures[callHash][i];
+        }
+    }
+
+    function _isSignedBy(bytes32 callHash, address signer) internal view returns (bool) {
+        address[] memory callSigners = signatures[callHash];
+
+        for (uint256 i; i < callSigners.length; ++i) {
             if (callSigners[i] == signer) return true;
         }
 
         return false;
     }
 
-    function _isSigner(address addr) internal view returns (bool) {
-        for (uint i; i < signers.length; ++i) {
-            if (signers[i] == addr) return true; 
-        }
+    function _checkSigner(address caller) internal view virtual {
+        address[] memory callSigners = signers ;
+        uint256 signersLength = signers.length;
+        bool isSigner = false ;
 
-        return false;
-    }
-
-    function _getSignatureCount(bytes32 data) internal view returns (uint8 count) {
-        address[SIGN_COUNT] memory callSigners = signatures[data];
-
-        for (uint8 i; i < SIGN_COUNT; ++i) {
-            if (callSigners[i] != address(0)) ++count;
-        }
-    }
-
-    function signCall(bytes calldata funcData) public onlySigner {
-        bytes32 data = keccak256(funcData);
-
-        if (_isOnCallStack(data, msg.sender)) revert AlreadySignedCall(msg.sender, data);
-
-        emit CallSigned(msg.sender, data);
-        
-        uint8 signatureCount = _getSignatureCount(data);
-
-        if (signatureCount + 1 >= SIGN_COUNT) {
-            // (bool success, bytes memory result) = address(this).call(funcData);
-            bytes memory result = Address.functionCall(address(this), funcData);
-
-            emit CallExecuted(data, result);
-
-            for (uint8 i; i < SIGN_COUNT; ++i) {
-                delete signatures[data][i];
+        for (uint256 i; i < signersLength; ++i) {
+            if (callSigners[i] == caller) {
+                isSigner = true ; 
+                break ;
             }
-        } else {
-            signatures[data][signatureCount] = msg.sender;
         }
+
+        if (!isSigner) revert InvalidSigner(caller);
     }
+
+    function _getSignatureCount(bytes32 callHash) internal view returns (uint256) {
+        return signatures[callHash].length;
+    }
+
 }
