@@ -4,8 +4,6 @@ import { abi as MSExampleAbi } from "../artifacts/contracts/Multisig_example.sol
 import { MSExample } from "../typechain-types" ;
 
 describe("Multisig", async function () {
-    let multisigExample: MSExample;
-
     const signCount = 4;
 
     const setup = deployments.createFixture(async () => {
@@ -63,30 +61,22 @@ describe("Multisig", async function () {
                 expect(await multisigExampleContract.connect(signers[i]).modifierHelloWorld())
                 .to.not.be.reverted;
             }
-<<<<<<< HEAD
 
-            expect( await multisigExample.connect(signers[signerCount - 1]).modifierHelloWorld())
+            expect( await multisigExampleContract.connect(signers[signCount - 1]).modifierHelloWorld())
             .to.emit(
-                multisigExample,
+                multisigExampleContract,
                 "CallExecuted(bytes32)"
             );
         })
         it("Should emut CallExecuted on multi param call", async function() {
-            const signers = await ethers.getSigners();
+            const { signers, multisigExampleContract } = await setup();
 
-            for (let i = 0; i < signerCount - 1; i++) {
-                expect(await multisigExample.connect(signers[i]).sumTwoNumbers(2, 2))
+            for (let i = 0; i < signCount - 1; i++) {
+                expect(await multisigExampleContract.connect(signers[i]).sumTwoNumbers(2, 2))
                 .to.not.be.reverted;
             }
             
-            expect(await multisigExample.connect(signers[signerCount - 1]).sumTwoNumbers(2, 2))
-||||||| parent of 149a2cb (feat: add hardhat-deploy initial integration to tests and base deploy script for multisig)
-            // Need to return the function value
-            expect(await multisigExample.connect(signers[signerCount - 1]).modifierHelloWorld())
-=======
-            // Need to return the function value
-            expect(await multisigExampleContract.connect(signers[signCount - 1]).modifierHelloWorld())
->>>>>>> 149a2cb (feat: add hardhat-deploy initial integration to tests and base deploy script for multisig)
+            expect(await multisigExampleContract.connect(signers[signCount - 1]).sumTwoNumbers(2, 2))
             .to.emit(
                 multisigExampleContract,
                 "CallExecuted(bytes32)"
