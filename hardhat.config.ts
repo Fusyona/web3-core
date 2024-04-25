@@ -5,6 +5,7 @@ import "hardhat-deploy";
 import "hardhat-deploy-ethers";
 import "hardhat-contract-sizer"
 import "hardhat-inspect";
+import "hardhat-neovim";
 
 
 const config: HardhatUserConfig = {
