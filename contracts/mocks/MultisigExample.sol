@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.25;
 
-import "./Multisig.sol";
+import "../Multisig.sol";
 
 interface IMSExample {
     function sumTwoNumbers(uint256 x, uint256 y) external returns (uint256 result);

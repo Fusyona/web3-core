@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import {ethers, deployments, getUnnamedAccounts} from "hardhat";
-import { abi as MSExampleAbi } from "../artifacts/contracts/Multisig_example.sol/MSExample.json" ;
+import { abi as MSExampleAbi } from "../artifacts/contracts/mocks/MultisigExample.sol/MSExample.json" ;
 import { MSExample } from "../typechain-types" ;
 
 describe("Multisig", async function () {
