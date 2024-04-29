@@ -1,6 +1,6 @@
 {
     "name": "@fusyona/web3-core",
-    "version": "0.4.9",
+    "version": "0.4.10",
     "description": "Fusyona web3 tools library.",
     "main": "dist/lib/main.js",
     "types": "dist/lib/main.d.ts",
