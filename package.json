@@ -21,6 +21,7 @@
         "/dist",
         "/lib",
         "/contracts",
+        "!/contracts/mocks/**/*",
         "/typechain-types"
     ],
     "bugs": {
