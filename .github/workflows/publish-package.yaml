@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: "20.x"
           cache: pnpm
+          scope: "@fusyona"
 
       - run: pnpm install
       - name: Publish package
