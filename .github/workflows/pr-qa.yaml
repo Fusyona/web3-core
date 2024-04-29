@@ -1,0 +1,19 @@
+name: "pull request QA"
+
+on:
+  pull_request:
+    branches: [ main, dev, develop ]
+    paths: [ contracts ]
+
+jobs:
+  pr-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: check pr code vulnerabilities with slither
+        uses: crytic/slither-action@v0.3.2
+        with:
+          fail-on: high
