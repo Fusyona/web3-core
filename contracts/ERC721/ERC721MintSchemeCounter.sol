@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19 ;
+pragma solidity ^0.8.25 ;
 pragma abicoder v2 ;
 
 import { ERC721MintScheme } from "./ERC721MintScheme.sol" ;
