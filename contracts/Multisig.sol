@@ -3,7 +3,6 @@ pragma solidity 0.8.25;
 
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
-
 contract Multisig {
     uint256 immutable SIGN_COUNT;  
     address[] public signers;
@@ -18,10 +17,10 @@ contract Multisig {
     error MultisigRequired();
     error AlreadySignedCall(address signer, bytes32 callHash);
     
-    modifier useMultisig(bytes memory funcData) {
+    modifier onlyMultisig(bytes memory funcData) {
         bytes32 callHash = keccak256(funcData);
 
-        if (_isOnCallStack(callHash, msg.sender)) revert AlreadySignedCall(msg.sender, callHash);
+        if (_isSignedBy(callHash, msg.sender)) revert AlreadySignedCall(msg.sender, callHash);
 
         uint256 signatureCount = _getSignatureCount(callHash);
 
@@ -35,45 +34,13 @@ contract Multisig {
     }
 
     modifier onlySigner() {
-        if (!_isSigner(msg.sender)) revert InvalidSigner(msg.sender);
+        _checkSigner(msg.sender);
         _;
     }
     
     constructor(address[] memory _signers, uint256 _signCount) {
         signers = _signers;
         SIGN_COUNT = _signCount;
-    }
-
-    function _isOnCallStack(bytes32 callHash, address signer) internal view returns (bool) {
-        address[] memory callSigners = signatures[callHash];
-
-        for (uint256 i; i < callSigners.length; ++i) {
-            if (callSigners[i] == signer) return true;
-        }
-
-        return false;
-    }
-
-    function _isSigner(address caller) internal view returns (bool) {
-        uint256 signersLength = signers.length;
-
-        for (uint256 i; i < signersLength; ++i) {
-            if (signers[i] == caller) return true; 
-        }
-
-        return false;
-    }
-
-    function _getSignatureCount(bytes32 callHash) internal view returns (uint256) {
-        return signatures[callHash].length;
-    }
-
-    function _cleanSignatures(bytes32 callHash) internal {
-        uint256 signCount = _getSignatureCount(callHash);
-
-        for (uint256 i; i < signCount; ++i) {
-            delete signatures[callHash][i];
-        }
     }
 
     function _addCallSigner(bytes32 callHash, address signer) internal {
@@ -90,4 +57,42 @@ contract Multisig {
         signatures[callHash][signCount] = signer;
         emit CallSigned(signer, callHash);
     }
+
+    function _cleanSignatures(bytes32 callHash) internal {
+        uint256 signCount = _getSignatureCount(callHash);
+
+        for (uint256 i; i < signCount; ++i) {
+            delete signatures[callHash][i];
+        }
+    }
+
+    function _isSignedBy(bytes32 callHash, address signer) internal view returns (bool) {
+        address[] memory callSigners = signatures[callHash];
+
+        for (uint256 i; i < callSigners.length; ++i) {
+            if (callSigners[i] == signer) return true;
+        }
+
+        return false;
+    }
+
+    function _checkSigner(address caller) internal view virtual {
+        address[] memory callSigners = signers ;
+        uint256 signersLength = signers.length;
+        bool isSigner = false ;
+
+        for (uint256 i; i < signersLength; ++i) {
+            if (callSigners[i] == caller) {
+                isSigner = true ; 
+                break ;
+            }
+        }
+
+        if (!isSigner) revert InvalidSigner(caller);
+    }
+
+    function _getSignatureCount(bytes32 callHash) internal view returns (uint256) {
+        return signatures[callHash].length;
+    }
+
 }
