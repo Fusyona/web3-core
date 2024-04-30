@@ -13,7 +13,7 @@ abstract contract MulticallProxy {
     function multicall(CallQuery[] calldata calls) external virtual returns (bytes[] memory results) {
         bytes memory context = msg.sender == _msgSender()
             ? new bytes(0)
-            : msg.data[msg.data.length - _contextSuffixLenght():];
+            : msg.data[msg.data.length - _contextSuffixLength():];
 
             results = new bytes[](data.length);
             for (uint256 i; i < data.length; ++i) {
