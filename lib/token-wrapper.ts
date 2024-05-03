@@ -10,23 +10,11 @@ import {
 } from "./types";
 import BaseWrapper from "./base-wrapper";
 
-const erc20AbiInterfaceMethods = [
-    "function totalSupply() external view returns(uint256)",
-    "function balanceOf(address) external view returns(uint256)",
-    "function transfer(address,uint256) external returns(bool)",
-    "function allowance(address,address) external view returns (uint256)",
-    "function approve(address,uint256) external returns (bool)",
-    "function transferFrom(address,address,uint256) external returns (bool)",
-]
+import { abi as IERC20Abi } from "../artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json"
+import { abi as IERC20MetadatAbi } from "../artifacts/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol/IERC20Metadata.json"
 
-const erc20MetadataAbiInterfaceMethods = [
-    "function name() external view returns (string memory)",
-    "function symbol() external view returns (string memory)",
-    "function decimals() external view returns (uint8)",
-]
-
-const erc20AbiInterface = new Interface(erc20AbiInterfaceMethods);
-const erc20MetadataAbiInterface = new Interface(erc20MetadataAbiInterfaceMethods);
+const erc20AbiInterface = new Interface(IERC20Abi);
+const erc20MetadataAbiInterface = new Interface(IERC20MetadatAbi);
 
 // TODO: fill tx data
 export class ERC20Wrapper extends BaseWrapper {
