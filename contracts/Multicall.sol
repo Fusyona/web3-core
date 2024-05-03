@@ -4,7 +4,7 @@ pragma solidity 0.8.25;
 import { Address } from "@openzeppelin/contracts/utils/Address.sol";
 import { Context } from "@openzeppelin/contracts/utils/Context.sol";
 
-contract MulticallProxy is Context {
+contract ExternalMulticall is Context {
     struct CallQuery {
         address target;
         bytes data;
