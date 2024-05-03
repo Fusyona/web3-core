@@ -5,10 +5,10 @@ const func: DeployFunction = async function(hre: HardhatRuntimeEnvironment) {
     const {deploy} = hre.deployments
     const {deployer} = await hre.getNamedAccounts()
 
-    await deploy("MulticallProxy", {
+    await deploy("ExternalMulticall", {
         from: deployer
     })
 }
 
 export default func
-func.tags = ["MulticallProxy"]
+func.tags = ["ExternalMulticall"]
