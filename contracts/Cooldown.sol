@@ -21,12 +21,13 @@ abstract contract Cooldown {
         _cooldowns[sender] = block.timestamp ;
     }
 
-    function _checkCooldown(address sender) internal view {
-        uint256 userCooldown = _cooldowns[sender] ;
+    function _checkCooldown(address sender) internal {
+        uint256 userCheckpoint = _cooldowns[sender] ;
         if (
-            userCooldown > 0 &&
-            block.timestamp - userCooldown < _cooldownTime
+            userCheckpoint > 0 &&
+            block.timestamp - userCheckpoint < _cooldownTime
         ) revert InsufficientCooldown() ;
+        _updateCooldown(sender) ;
     }
 
 }

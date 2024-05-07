@@ -6,10 +6,11 @@ import { ERC721MintScheme } from "./ERC721MintScheme.sol" ;
 
 abstract contract ERC721MintSchemeCounter is ERC721MintScheme {
 
-    uint256 internal tokensIdCounter ;
+    uint256 internal _tokenIdCounter ;
 
     function _getNextTokenId() internal virtual override returns(uint256 tokenId) {
-        return ++tokensIdCounter ;
+        tokenId = _tokenIdCounter ;
+        ++_tokenIdCounter ;
     }
 
 }
