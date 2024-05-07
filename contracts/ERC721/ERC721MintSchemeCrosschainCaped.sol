@@ -16,7 +16,7 @@ abstract contract ERC721MintSchemeCrosschainCaped is ERC721MintSchemeCrosschain 
         _cap = cap_ ;
     }
 
-    function _checkTokenId(uint256 /*tokenId*/) internal virtual override {
+    function _preMintHook(uint256 /*tokenId*/) internal virtual override {
         if (_tokenIdCounter >= _cap) revert CapExceeded() ;
     }
 

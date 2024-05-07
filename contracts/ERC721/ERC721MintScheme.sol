@@ -8,12 +8,12 @@ abstract contract ERC721MintScheme is ERC721 {
 
     function _mintTo(address receiver) internal virtual {
         uint256 tokenId = _getNextTokenId() ;
-        _checkTokenId(tokenId);
+        _preMintHook(tokenId);
         _safeMint(receiver, tokenId) ;
     }
 
     function _getNextTokenId() internal virtual returns(uint256 tokenId) ;
 
-    function _checkTokenId(uint256 tokenId) internal virtual {}
+    function _preMintHook(uint256 tokenId) internal virtual {}
 
 }

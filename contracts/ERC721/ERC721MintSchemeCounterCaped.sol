@@ -16,8 +16,8 @@ abstract contract ERC721MintSchemeCounterCaped is ERC721MintSchemeCounter {
         _cap = cap_ ;
     }
 
-    function _checkTokenId(uint256 tokenId) internal virtual override {
-        if (tokenId > _cap ) revert CapExceeded() ;
+    function _preMintHook(uint256 tokenId) internal virtual override {
+        if (tokenId >= _cap ) revert CapExceeded() ;
     }
 
 }
