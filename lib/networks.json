@@ -12,6 +12,11 @@
         "rpcUrl": "https://rpc.mainnet.taraxa.io/",
         "explorerUrl": "https://explorerUrl.mainnet.taraxa.io/"
     },
+    "nebula": {
+        "chainId": 1482601649,
+        "rpcUrl": "https://mainnet.skalenodes.com/v1/green-giddy-denebola",
+        "explorerUrl": "https://green-giddy-denebola.explorer.mainnet.skalenodes.com"
+    },
     "telos": {
         "chainId": 40,
         "rpcUrl": "https://mainnet.telos.net/evm",
@@ -40,6 +45,11 @@
         "chainId": 842,
         "rpcUrl": "https://rpc.testnet.taraxa.io/",
         "explorerUrl": "https://explorerUrl.testnet.taraxa.io/"
+    },
+    "nebula-testnet": {
+        "chainId": 37084624,
+        "rpcUrl": "https://testnet.skalenodes.com/v1/lanky-ill-funny-testnet",
+        "explorerUrl": "https://staging-faint-slimy-achird.explorer.staging-v3.skalenodes.com"
     },
     "telos-testnet": {
         "chainId": 41,
