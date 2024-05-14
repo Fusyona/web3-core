@@ -1,108 +1,90 @@
 import {
     Transaction, 
     TransactionResponse,
-    BigNumberish,
-    Interface
+    Contract
 } from "ethers";
 
 import {
-    Address
+    Address,
+    AddressOrAddressable,
+    SupportedProvider
 } from "./types";
 import BaseWrapper from "./base-wrapper";
-
-const erc20AbiInterfaceMethods = [
-    "function totalSupply() external view returns(uint256)",
-    "function balanceOf(address) external view returns(uint256)",
-    "function transfer(address,uint256) external returns(bool)",
-    "function allowance(address,address) external view returns (uint256)",
-    "function approve(address,uint256) external returns (bool)",
-    "function transferFrom(address,address,uint256) external returns (bool)",
-]
-
-const erc20MetadataAbiInterfaceMethods = [
-    "function name() external view returns (string memory)",
-    "function symbol() external view returns (string memory)",
-    "function decimals() external view returns (uint8)",
-]
-
-const erc20AbiInterface = new Interface(erc20AbiInterfaceMethods);
-const erc20MetadataAbiInterface = new Interface(erc20MetadataAbiInterfaceMethods);
+import {abi as IERC20Abi} from "../artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json"
+import {abi as IERC20MetadataAbi} from "../artifacts/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol/IERC20Metadata.json"
 
 // TODO: fill tx data
 export class ERC20Wrapper extends BaseWrapper {
-    async totalSupply(): Promise<number> {
-        const tx = new Transaction();
-        tx.to = await this.getAddress();
-        tx.data = erc20AbiInterface.encodeFunctionData("totalSupply");
-
-        return parseFloat(await this.provider.call(tx));
+    constructor(
+        address: AddressOrAddressable, 
+        provider: SupportedProvider
+    ) {
+        super(
+            address,
+            IERC20Abi,
+            provider
+        )
+    }
+    async totalSupply(): Promise<string> {
+        return this.contract.totalSupply()
     }
 
-    async balanceOf(account: Address): Promise<number> {
-        const tx = new Transaction();
-        tx.to = await this.getAddress();
-        tx.data = erc20AbiInterface.encodeFunctionData("balanceOf", [account]);
-
-        return parseFloat(await this.provider.call(tx));
+    async balanceOf(account: Address): Promise<string> {
+        return this.contract.balanceOf(account)
     }
 
-    async transfer(to: Address, value: BigNumberish): Promise<TransactionResponse> {
-        const tx = new Transaction();
-        tx.to = await this.getAddress();
-        tx.data = erc20AbiInterface.encodeFunctionData("transfer", [to, value]);
-
-        // TODO: make sure the signer is valid and defined
-        return this.waitAndReturn(this.signer!.sendTransaction(tx));
+    async transfer(to: Address, value: string): Promise<TransactionResponse> {
+        return this.withSigner(
+            await this.provider.getSigner()
+        ).contract.transfer(to, value);
     }
 
-    async allowance(owner: Address, spender: Address): Promise<BigNumberish> {
-        const tx = new Transaction();
-        tx.to = await this.getAddress();
-        tx.data = erc20AbiInterface.encodeFunctionData("allowance", [owner, spender]);
-
-        return parseFloat(await this.provider.call(tx));
+    async allowance(owner: Address, spender: Address): Promise<string> {
+        return this.contract.allowance(owner, spender)
     }
 
-    async approve(spender: Address, value: BigNumberish): Promise<TransactionResponse> {
-        const tx = new Transaction();
-        tx.to = await this.getAddress();
-        tx.data = erc20AbiInterface.encodeFunctionData("approve", [spender, value]);
-
-        return this.waitAndReturn(this.signer!.sendTransaction(tx));
+    async approve(spender: Address, value: string): Promise<TransactionResponse> {
+        return this.withSigner(
+            await this.provider.getSigner()
+        ).contract.approve(spender, value);
     }
 
-    async transferFrom(from: Address, to: Address, value: BigNumberish): Promise<TransactionResponse> {
-        const tx = new Transaction();
-        tx.to = await this.getAddress();
-        tx.data = erc20AbiInterface.encodeFunctionData("transferFrom", [from, to, value]);
-
-        return this.waitAndReturn(this.signer!.sendTransaction(tx));
+    async transferFrom(from: Address, to: Address, value: string): Promise<TransactionResponse> {
+        return this.withSigner(
+            await this.provider.getSigner()
+        ).contract.transferFrom(from, to, value);
     }
 }
 
 export class ERC20MetadataWrapper extends ERC20Wrapper {
-    async name(): Promise<string> {
-        const tx = new Transaction();
-        tx.to = await this.getAddress();
-        tx.data = erc20AbiInterface.encodeFunctionData("name");
+    constructor(
+        address: AddressOrAddressable, 
+        provider: SupportedProvider
+    ) {
+        super(
+            address,
+            provider
+        )
 
-        return this.provider.call(tx);
+        this.withContract(
+            new Contract(
+                this.contract.target, 
+                IERC20MetadataAbi, 
+                provider
+            )
+        )
+    }
+
+    async name(): Promise<string> {
+        return this.contract.name()
     }
 
     async symbol(): Promise<string> {
-        const tx = new Transaction();
-        tx.to = await this.getAddress();
-        tx.data = erc20AbiInterface.encodeFunctionData("symbol");
-
-        return this.provider.call(tx);
+        return this.contract.symbol()
     }
 
     async decimals(): Promise<number> {
-        const tx = new Transaction();
-        tx.to = await this.getAddress();
-        tx.data = erc20AbiInterface.encodeFunctionData("decimals");
-
-        return parseInt(await this.provider.call(tx));
+        return this.contract.decimals()
     }
 }
 
