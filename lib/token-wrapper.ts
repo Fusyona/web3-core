@@ -1,7 +1,8 @@
 import {
     Transaction, 
     TransactionResponse,
-    Contract
+    Contract,
+    parseEther
 } from "ethers";
 
 import {
@@ -29,7 +30,7 @@ export class ERC20Wrapper extends BaseWrapper {
         return this.contract.totalSupply()
     }
 
-    async balanceOf(account: Address): Promise<string> {
+    async balanceOf(account: Address): Promise<bigint> {
         return this.contract.balanceOf(account)
     }
 
@@ -39,7 +40,7 @@ export class ERC20Wrapper extends BaseWrapper {
         ).contract.transfer(to, value);
     }
 
-    async allowance(owner: Address, spender: Address): Promise<string> {
+    async allowance(owner: Address, spender: Address): Promise<bigint> {
         return this.contract.allowance(owner, spender)
     }
 
