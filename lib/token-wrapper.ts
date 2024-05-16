@@ -11,8 +11,17 @@ import {
     SupportedProvider
 } from "./types";
 import BaseWrapper from "./base-wrapper";
+<<<<<<< HEAD
 import {abi as IERC20Abi} from "../artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json"
 import {abi as IERC20MetadataAbi} from "../artifacts/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol/IERC20Metadata.json"
+=======
+
+import { abi as IERC20Abi } from "../artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json"
+import { abi as IERC20MetadatAbi } from "../artifacts/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol/IERC20Metadata.json"
+
+const erc20AbiInterface = new Interface(IERC20Abi);
+const erc20MetadataAbiInterface = new Interface(IERC20MetadatAbi);
+>>>>>>> refs/remotes/origin/feat/multicall_proxy
 
 // TODO: fill tx data
 export class ERC20Wrapper extends BaseWrapper {
