@@ -47,9 +47,7 @@ export class ERC20Wrapper extends BaseWrapper {
     }
 
     async transfer(to: Address, value: string): Promise<TransactionResponse> {
-        return this.withSigner(
-            await this.provider.getSigner()
-        ).contract.transfer(to, value);
+        return this.contract.transfer(to, value);
     }
 
     async allowance(owner: Address, spender: Address): Promise<bigint> {
@@ -57,15 +55,11 @@ export class ERC20Wrapper extends BaseWrapper {
     }
 
     async approve(spender: Address, value: string): Promise<TransactionResponse> {
-        return this.withSigner(
-            await this.provider.getSigner()
-        ).contract.approve(spender, value);
+        return this.contract.approve(spender, value);
     }
 
     async transferFrom(from: Address, to: Address, value: string): Promise<TransactionResponse> {
-        return this.withSigner(
-            await this.provider.getSigner()
-        ).contract.transferFrom(from, to, value);
+        return this.contract.transferFrom(from, to, value);
     }
 }
 

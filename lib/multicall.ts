@@ -53,9 +53,7 @@ export class ExternalMulticallWrapper extends BaseWrapper {
             }
         ]
 
-        await this.withSigner(
-            await this.provider.getSigner()
-        ).contract.multicall(txs)
+        await this.contract.multicall(txs)
         return true
     }
 }
