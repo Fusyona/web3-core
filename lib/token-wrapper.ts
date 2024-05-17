@@ -2,6 +2,7 @@ import {
     Transaction, 
     TransactionResponse,
     Contract,
+    Interface,
     parseEther
 } from "ethers";
 
@@ -11,19 +12,21 @@ import {
     SupportedProvider
 } from "./types";
 import BaseWrapper from "./base-wrapper";
-<<<<<<< HEAD
 import {abi as IERC20Abi} from "../artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json"
 import {abi as IERC20MetadataAbi} from "../artifacts/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol/IERC20Metadata.json"
-=======
+import { abi as IERC165Abi } from "../artifacts/@openzeppelin/contracts/utils/introspection/IERC165.sol/IERC165.json";
+import { abi as IERC1363Abi } from "../artifacts/@openzeppelin/interfaces/IERC1363.sol/IERC1363.json";
 
-import { abi as IERC20Abi } from "../artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json"
-import { abi as IERC20MetadatAbi } from "../artifacts/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol/IERC20Metadata.json"
+interface IPayable {
+    ensureApproveAndCall(address: string, amount: string, encoder: DataEncoder, callback: CallableFunction): Promise<void>
+}
 
-const erc20AbiInterface = new Interface(IERC20Abi);
-const erc20MetadataAbiInterface = new Interface(IERC20MetadatAbi);
->>>>>>> refs/remotes/origin/feat/multicall_proxy
+type DataEncoder = {
+    abi: Interface,
+    signature: string,
+    args: any[]
+}
 
-// TODO: fill tx data
 export class ERC20Wrapper extends BaseWrapper {
     constructor(
         address: AddressOrAddressable, 
@@ -176,5 +179,39 @@ class ERC721EnumerableWrapper extends ERC721Wrapper {
     async tokenByIndex(index: number): Promise<string> {
         const tx = new Transaction();
         return await this.provider!.call(tx);
+    }
+}
+
+class PayableTokenWrapper extends ERC20Wrapper implements IPayable {
+    constructor(
+        address: string, 
+        provider: SupportedProvider
+    ) {
+        super(
+            address,
+            provider
+        )
+    }
+
+    async ensureApproveAndCall(spender: string, amount: string, encoder: DataEncoder, callback: CallableFunction): Promise<void> {
+        // Hardcoded IERC1363 interface Id, since there is no way to generate it offchain without complex code
+        // Calculate the hash of the xor operation to everty iface method is pretty complex and since this value 
+        // is deterministic, this can be hardcoded unless the standard interface code changes, which probably not
+        const ifaceId = "0xb0202a11"
+
+        if (await this.contract.allowance(spender, this.signer!) < parseEther(amount)) {
+            const contract = new Contract(this.contract.target, IERC165Abi, this.provider)
+
+            // Contract implements IERC1363 interface 
+            if (await contract.implementsInterface(ifaceId)) {
+                const data = encoder.abi.encodeFunctionData(encoder.signature, encoder.args)
+                await this.withContract(
+                    new Contract(this.contract.target, IERC1363Abi, this.provider)
+                ).contract.approveAndCall(spender, amount, data)
+            } else {
+                await this.approve(spender, amount)
+                await callback()
+            }
+        }
     }
 }
