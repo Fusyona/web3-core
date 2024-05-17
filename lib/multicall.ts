@@ -13,7 +13,7 @@ export type CallQuery = {
 }
 
 interface IPayable {
-    ensureApproveAndCall(address: string, amount: string, encoder: DataEncoder): Promise<void>
+    ensureApproveAndCall(address: string, amount: string, encoder: DataEncoder, callback: CallableFunction): Promise<void>
 }
 
 type DataEncoder = {
@@ -33,7 +33,7 @@ class PayableTokenWrapper extends ERC20Wrapper implements IPayable {
         )
     }
 
-    async ensureApproveAndCall(spender: string, amount: string, encoder: DataEncoder): Promise<void> {
+    async ensureApproveAndCall(spender: string, amount: string, encoder: DataEncoder, callback: CallableFunction): Promise<void> {
         // Hardcoded IERC1363 interface Id, since there is no way to generate it offchain without complex code
         // Calculate the hash of the xor operation to everty iface method is pretty complex and since this value 
         // is deterministic, this can be hardcoded unless the standard interface code changes, which probably not
@@ -50,6 +50,7 @@ class PayableTokenWrapper extends ERC20Wrapper implements IPayable {
                 ).contract.approveAndCall(spender, amount, data)
             } else {
                 await this.approve(spender, amount)
+                await callback()
             }
         }
     }
