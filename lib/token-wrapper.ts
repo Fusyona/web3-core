@@ -21,7 +21,7 @@ interface IPayable {
     ensureApproveAndCall(address: string, amount: string, encoder: DataEncoder, callback: CallableFunction): Promise<void>
 }
 
-type DataEncoder = {
+export type DataEncoder = {
     abi: Interface,
     signature: string,
     args: any[]
@@ -176,7 +176,7 @@ class ERC721EnumerableWrapper extends ERC721Wrapper {
     }
 }
 
-class PayableTokenWrapper extends ERC20Wrapper implements IPayable {
+export class PayableTokenWrapper extends ERC20Wrapper implements IPayable {
     constructor(
         address: string, 
         provider: SupportedProvider
