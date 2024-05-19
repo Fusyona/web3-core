@@ -30,7 +30,7 @@ describe("Payable Token wrapper", function() {
             args: [await deployer.getAddress(), await signers[1].getAddress(), 100]
         }
 
-        payableWrapper.withSigner(deployer).ensureApproveAndCall(payableContract.target.toString(), "1000", encoder, () => {})
+        await payableWrapper.withSigner(deployer).ensureApproveAndCall(payableContract.target.toString(), "1000", encoder, () => {})
 
         expect(await payableContract.balanceOf(deployer))
             .to.be.equal(9900)
