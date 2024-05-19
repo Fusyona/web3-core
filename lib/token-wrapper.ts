@@ -178,7 +178,7 @@ class ERC721EnumerableWrapper extends ERC721Wrapper {
 
 export class PayableTokenWrapper extends ERC20Wrapper implements IPayable {
     constructor(
-        address: string, 
+        address: AddressOrAddressable, 
         provider: SupportedProvider
     ) {
         super(
