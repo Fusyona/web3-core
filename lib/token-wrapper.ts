@@ -15,7 +15,7 @@ import BaseWrapper from "./base-wrapper";
 import {abi as IERC20Abi} from "../artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json"
 import {abi as IERC20MetadataAbi} from "../artifacts/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol/IERC20Metadata.json"
 import { abi as IERC165Abi } from "../artifacts/@openzeppelin/contracts/utils/introspection/IERC165.sol/IERC165.json";
-import { abi as IERC1363Abi } from "../artifacts/@openzeppelin/interfaces/IERC1363.sol/IERC1363.json";
+import { abi as IERC1363Abi } from "../artifacts/@openzeppelin/contracts/interfaces/IERC1363.sol/IERC1363.json";
 
 interface IPayable {
     ensureApproveAndCall(address: string, amount: string, encoder: DataEncoder, callback: CallableFunction): Promise<void>
@@ -197,11 +197,11 @@ export class PayableTokenWrapper extends ERC20Wrapper implements IPayable {
             const contract = new Contract(this.contract.target, IERC165Abi, this.provider)
 
             // Contract implements IERC1363 interface 
-            if (await contract.implementsInterface(ifaceId)) {
+            if (await contract.supportsInterface(ifaceId)) {
                 const data = encoder.abi.encodeFunctionData(encoder.signature, encoder.args)
                 await this.withContract(
                     new Contract(this.contract.target, IERC1363Abi, this.provider)
-                ).contract.approveAndCall(spender, amount, data)
+                ).contract["approveAndCall(address,uint256,bytes)"](spender, amount, data)
             } else {
                 await this.approve(spender, amount)
                 await callback()
