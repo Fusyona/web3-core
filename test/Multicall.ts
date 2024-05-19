@@ -1,52 +1,48 @@
 import {expect} from "chai"
-import {ethers} from "hardhat"
+import {ethers, network} from "hardhat"
 import { Interface, Addressable } from "ethers"
 import {abi as mockTokenABI} from "../artifacts/contracts/mocks/ERC20Mock.sol/ERC20Mock.json"
-import {ExternalMulticall, ERC20Mock} from "../typechain-types"
-
-type CallQuery = {
-    target: string | Addressable,
-    data: string
-}
+import {ExternalMulticall, ERC20} from "../typechain-types"
+import {CallQuery, ExternalMulticallWrapper} from "../lib/multicall"
+import { ERC20Wrapper } from "../lib/token-wrapper"
+import { Contract, BrowserProvider, JsonRpcProvider } from "ethers"
 
 describe("ExternalMulticall contract", function () {
     let multicallContract: ExternalMulticall
-    let mockTokenAContract: ERC20Mock
-    // let mockTokenBContract: ERC20
-
-    const abi = ["function transferFrom(address,address,uint256)"]
-    const mockAbiInterface = new Interface(abi)
+    let mockTokenAContract, mockTokenBContract: ERC20
+    let multicallWrapper: ExternalMulticallWrapper
 
     beforeEach(async () => {
         const signers = await ethers.getSigners()
         multicallContract = await ethers.deployContract("ExternalMulticall", []);
         mockTokenAContract = await ethers.deployContract("ERC20Mock", [signers[0], 10000, "TokenA", "TKA"]);
-        // mockTokenBContract = await ethers.deployContract("ExternalMulticall", []);        
+        mockTokenBContract = await ethers.deployContract("ERC20Mock", [signers[0], 10000, "TokenB", "TKB"])
+        // const provider = new ethers.providers.JsonRpcProvider()
+
+        const provider = new BrowserProvider(network.provider)
+
+        multicallWrapper = new ExternalMulticallWrapper(
+            multicallContract, 
+            provider, 
+            new ERC20Wrapper(mockTokenAContract.target, provider), 
+            new ERC20Wrapper(mockTokenBContract.target, provider)
+        )
     });
 
     it("should transfer twice after approve", async function() {
         const signers = await ethers.getSigners()
         const deployer = signers[0]
 
-        const transferSignature = "transferFrom(address,address,uint256)"
-            const callQueries: CallQuery[] = [
-                {
-                    target: mockTokenAContract.target, 
-                    data: mockAbiInterface.encodeFunctionData(transferSignature, [deployer.address, signers[1].address, 100])
-                },
-                {   
-                    target: mockTokenAContract.target, 
-                    data: mockAbiInterface.encodeFunctionData(transferSignature, [deployer.address, signers[1].address, 200])
-                }
-            ]
+        expect(await mockTokenAContract.connect(deployer).approve(await multicallWrapper.getAddress(), 1000))
+        .to.not.be.reverted
+        expect(await mockTokenBContract.connect(deployer).approve(await multicallWrapper.getAddress(), 1000))
+        .to.not.be.reverted
 
-            expect(await mockTokenAContract.connect(deployer).approve(multicallContract.target, 1000))
-            .to.not.be.reverted
+        await multicallWrapper.withSigner(deployer).batchTransfer(deployer.address, '100', '100')
 
-            expect(await multicallContract.connect(deployer).multicall(callQueries))
-            .to.not.be.reverted
-
-            expect(await mockTokenAContract.balanceOf(signers[1]))
-            .to.be.equal(300)
+        expect(await mockTokenAContract.balanceOf(mockTokenAContract.target))
+        .to.be.equal('100')
+        expect(await mockTokenBContract.balanceOf(mockTokenBContract.target))
+        .to.be.equal('100')
     })
 })
