@@ -1,15 +1,12 @@
 {
     "name": "@fusyona/web3-core",
-    "version": "0.4.15",
+    "version": "0.4.16",
     "description": "Fusyona web3 tools library.",
     "main": "dist/lib/main.js",
     "types": "dist/lib/main.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/Fusyona/web3-core"
-    },
-    "publishConfig": {
-        "registry": "https://npm.pkg.github.com/"
     },
     "keywords": [
         "web3",
@@ -35,7 +32,9 @@
         "test": "pnpm hardhat test",
         "prepublishOnly": "pnpm run build",
         "gitconfig": "git config core.hooksPath .githooks",
-        "release": "VERSION=$(git describe main --tags --abbrev=0) ; git push origin $VERSION ; gh release create $VERSION --generate-notes"
+        "release:create": "VERSION=$(git describe main --tags --abbrev=0) ; git push origin $VERSION ; gh release create $VERSION --generate-notes",
+        "release:publish": "pnpm publish --no-git-checks",
+        "release": "pnpm release:create && pnpm release:publish"
     },
     "devDependencies": {
         "@commitlint/cli": "^19.1.0",
