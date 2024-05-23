@@ -206,6 +206,8 @@ export class PayableTokenWrapper extends ERC20Wrapper implements IPayable {
                 await this.approve(spender, amount)
                 await callback()
             }
+        } else {
+            await callback()
         }
     }
 }
