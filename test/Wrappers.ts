@@ -16,26 +16,27 @@ describe("Payable Token wrapper", function() {
         const provider = new BrowserProvider(network.provider)
         payableWrapper = new PayableTokenWrapper(
             payableContract.target,
-            provider
+            ethers.provider
         )
     })
 
     it("should ensureApproveAndCall", async function() {
         const signers = await ethers.getSigners()
         const deployer = signers[0]
+        const contractAddr = payableContract.target.toString()
 
         const encoder: DataEncoder = {
             abi: new Interface(IERC20Abi),
             signature: "transferFrom(address,address,uint256)",
-            args: [await deployer.getAddress(), await signers[1].getAddress(), 100]
+            args: [await deployer.getAddress(), await signers[1].getAddress(), 1000]
         }
 
-        await payableWrapper.withSigner(deployer).ensureApproveAndCall(payableContract.target.toString(), "1000", encoder, () => {})
+        await payableWrapper.withSigner(deployer).ensureApproveAndCall(contractAddr, "1000", encoder, () => {})
 
         expect(await payableContract.balanceOf(deployer))
-            .to.be.equal(9900)
+            .to.be.equal(9000)
 
         expect(await payableContract.balanceOf(signers[1]))
-            .to.be.equal(100)
+            .to.be.equal(1000)
     })
 })

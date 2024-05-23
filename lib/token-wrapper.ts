@@ -187,6 +187,12 @@ export class PayableTokenWrapper extends ERC20Wrapper implements IPayable {
         )
     }
 
+    async approveAndCall(spender: string, amount: string, data: string) {
+        return this.withContract(
+            new Contract(this.contract.target, IERC1363Abi, this.signer)
+        ).contract["approveAndCall(address,uint256,bytes)"](spender, amount, data)
+    }
+
     async ensureApproveAndCall(spender: string, amount: string, encoder: DataEncoder, callback: CallableFunction): Promise<void> {
         // Hardcoded IERC1363 interface Id, since there is no way to generate it offchain without complex code
         // Calculate the hash of the xor operation to everty iface method is pretty complex and since this value 
@@ -199,9 +205,10 @@ export class PayableTokenWrapper extends ERC20Wrapper implements IPayable {
             // Contract implements IERC1363 interface 
             if (await contract.supportsInterface(ifaceId)) {
                 const data = encoder.abi.encodeFunctionData(encoder.signature, encoder.args)
-                await this.withContract(
-                    new Contract(this.contract.target, IERC1363Abi, this.provider)
-                ).contract["approveAndCall(address,uint256,bytes)"](spender, amount, data)
+
+                await this.approveAndCall(spender, amount, data)
+
+                this.setContract(new Contract(this.contract.target, IERC20Abi, this.signer))
             } else {
                 await this.approve(spender, amount)
                 await callback()
