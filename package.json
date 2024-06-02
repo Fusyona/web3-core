@@ -48,7 +48,8 @@
         "hardhat-deploy-ethers": "^0.4.1",
         "hardhat-inspect": "^0.1.11",
         "hardhat-neovim": "^0.3.3",
-        "prettier-plugin-solidity": "^1.1.3"
+        "prettier-plugin-solidity": "^1.1.3",
+        "typescript": "^5.4.5"
     },
     "dependencies": {
         "@openzeppelin/contracts": "^5.0.2",
