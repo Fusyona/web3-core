@@ -11,7 +11,7 @@ describe("ERC721 Wrapper", async () => {
         const [deployer] = await ethers.getSigners()
 
         tokenContract = await ethers.deployContract("ERC721Mock", [deployer, "Mock", "MKT"])
-        const tokenWrapper = new ERC721Wrapper(
+        tokenWrapper = new ERC721Wrapper(
             tokenContract.target,
             ethers.provider
         )
@@ -37,12 +37,8 @@ describe("ERC721 Wrapper", async () => {
         expect(await tokenWrapper.balanceOf(await target.getAddress()))
             .to.be.equal("0")
 
-        await tokenWrapper.withSigner(deployer).transferFrom(await deployer.getAddress(), await target.getAddress(), "1")
-
-        expect(await tokenWrapper.balanceOf(await deployer.getAddress()))
-            .to.be.equal("0")
-        expect(await tokenWrapper.balanceOf(await target.getAddress()))
-            .to.be.equal("1")
+        expect(await tokenWrapper.withSigner(deployer).transferFrom(await deployer.getAddress(), await target.getAddress(), "1"))
+            .to.changeTokenBalance(tokenContract, [deployer, target], [-1, 1])
     })
     it("should approve and approveAll and transferFrom", async () => {
         const [deployer, target, spender] = await ethers.getSigners()
@@ -57,12 +53,8 @@ describe("ERC721 Wrapper", async () => {
         expect(await tokenWrapper.balanceOf(await target.getAddress()))
             .to.be.equal("0")
 
-        await tokenWrapper.withSigner(spender).transferFrom(await deployer.getAddress(), await target.getAddress(), "1")
-
-        expect(await tokenWrapper.balanceOf(await deployer.getAddress()))
-            .to.be.equal("0")
-        expect(await tokenWrapper.balanceOf(await target.getAddress()))
-            .to.be.equal("1")
+        expect(await tokenWrapper.withSigner(spender).transferFrom(await deployer.getAddress(), await target.getAddress(), "1"))
+            .to.changeTokenBalance(tokenContract, [deployer, target], [-1, 1])
         expect(await tokenWrapper.ownerOf("1"))
             .to.be.equal(await target.getAddress())
 
@@ -70,12 +62,10 @@ describe("ERC721 Wrapper", async () => {
 
         expect(await tokenWrapper.isApprovedForAll(await target.getAddress(), await spender.getAddress()))
 
-        await tokenWrapper.withSigner(spender).transferFrom(await target.getAddress(), await deployer.getAddress(), "1")
+        
 
-        expect(await tokenWrapper.balanceOf(await deployer.getAddress()))
-            .to.be.equal("1")
-        expect(await tokenWrapper.balanceOf(await target.getAddress()))
-            .to.be.equal("0")
+        expect(await tokenWrapper.withSigner(spender).transferFrom(await target.getAddress(), await deployer.getAddress(), "1"))
+            .to.changeTokenBalance(tokenContract, [target, deployer], [-1, 1])
         expect(await tokenWrapper.ownerOf("1"))
             .to.be.equal(await deployer.getAddress())
     })

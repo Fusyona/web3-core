@@ -41,12 +41,8 @@ describe("ERC20 Wrapper", async () => {
         expect(await tokenWrapper.balanceOf(await target.getAddress()))
             .to.be.equal("0")
 
-        await tokenWrapper.withSigner(deployer).transfer(await target.getAddress(), "10")
-
-        expect(await tokenWrapper.balanceOf(await deployer.getAddress()))
-            .to.be.equal("90")
-        expect(await tokenWrapper.balanceOf(await target.getAddress()))
-            .to.be.equal("10")
+        expect(await tokenWrapper.withSigner(deployer).transfer(await target.getAddress(), "10"))
+            .to.changeTokenBalance(tokenContract, [deployer, target], [-10, 10])
     })
     it("should approve and transferFrom", async () => {
         const [deployer, target, spender] = await ethers.getSigners()
@@ -61,11 +57,9 @@ describe("ERC20 Wrapper", async () => {
         expect(await tokenWrapper.allowance(await deployer.getAddress(), await spender.getAddress()))
             .to.be.equal("10")
 
-        await tokenWrapper.withSigner(spender).transferFrom(await deployer.getAddress(), await target.getAddress(), "10")
+        
 
-        expect(await tokenWrapper.balanceOf(await deployer.getAddress()))
-            .to.be.equal("90")
-        expect(await tokenWrapper.balanceOf(await target.getAddress()))
-            .to.be.equal("10")
+        expect(await tokenWrapper.withSigner(spender).transferFrom(await deployer.getAddress(), await target.getAddress(), "10"))
+            .to.changeTokenBalance(tokenContract, [deployer, target], [-10, 10])
     })
 })
