@@ -5,32 +5,32 @@ import { ERC721Mock } from "../../typechain-types"
 
 describe("ERC721 Wrapper", async () => {
     let tokenContract: ERC721Mock
+    let tokenWrapper: ERC721Wrapper
 
     beforeEach(async () => {
         const [deployer] = await ethers.getSigners()
 
         tokenContract = await ethers.deployContract("ERC721Mock", [deployer, "Mock", "MKT"])
-    })
-
-    it("should show token info", async () => {
         const tokenWrapper = new ERC721Wrapper(
             tokenContract.target,
             ethers.provider
         )
+    })
 
+    it("should show token symbol", async () => {
         expect(await tokenWrapper.symbol())
             .to.be.equal("MKT")
+    })
+    it("should show token name", async () => {
         expect(await tokenWrapper.name())
             .to.be.equal("Mock")
+    })
+    it("Should show tokenUri", async () => {
         expect(await tokenWrapper.tokenUri('1'))
             .to.be.equal("")
     })
     it("should transferFrom", async () => {
         const [deployer, target] = await ethers.getSigners()
-
-        const tokenWrapper = new ERC721Wrapper(
-            tokenContract.target, ethers.provider
-        )
 
         expect(await tokenWrapper.balanceOf(await deployer.getAddress()))
             .to.be.equal("1")
@@ -46,10 +46,6 @@ describe("ERC721 Wrapper", async () => {
     })
     it("should approve and approveAll and transferFrom", async () => {
         const [deployer, target, spender] = await ethers.getSigners()
-
-        const tokenWrapper = new ERC721Wrapper(
-            tokenContract.target, ethers.provider
-        )
 
         await tokenWrapper.withSigner(deployer).approve(await spender.getAddress(), "1")
 
