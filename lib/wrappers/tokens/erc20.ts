@@ -28,7 +28,7 @@ export class ERC20Wrapper extends BaseWrapper {
         return this.call.balanceOf(account)
     }
 
-    async transfer(to: Address, value: bigint) {
+    async transfer(to: Address, value: string) {
         return this.call.transfer(to, value)
     }
 
