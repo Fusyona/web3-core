@@ -7,7 +7,7 @@ import {
     AddressOrAddressable,
     SupportedProvider
 } from "../../types";
-import BaseWrapper from "../base-wrapper";
+import BaseWrapper from "../../base-wrapper";
 import { ERC20 } from "../../../typechain-types";
 import { abi as ERC20ABI } from "../../../artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json"
 
