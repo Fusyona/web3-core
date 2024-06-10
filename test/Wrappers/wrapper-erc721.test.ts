@@ -46,9 +46,9 @@ describe("ERC721 Wrapper", async () => {
     it("should setApprovalForAll and transferFrom", async () => {
         const [deployer, target, spender] = await ethers.getSigners()
 
-        await tokenWrapper.withSigner(target).setApprovalForAll(await spender.getAddress(), true)
+        await tokenWrapper.withSigner(deployer).setApprovalForAll(await spender.getAddress(), true)
 
-        expect(await tokenWrapper.withSigner(spender).transferFrom(await target.getAddress(), await deployer.getAddress(), "1"))
+        expect(await tokenWrapper.withSigner(spender).transferFrom(await deployer.getAddress(), await target.getAddress(), "1"))
             .to.changeTokenBalance(tokenContract, [target, deployer], [-1, 1])
     })
 })
