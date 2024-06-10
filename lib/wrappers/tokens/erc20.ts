@@ -20,41 +20,23 @@ export class ERC20Wrapper extends BaseWrapper {
         super(contract, provider)
     }
 
-    async totalSupply(): Promise<bigint> {
-        return this.call.totalSupply()
-    }
-
-    async balanceOf(account: Address): Promise<bigint> {
-        return this.call.balanceOf(account)
-    }
-
     async transfer(to: Address, value: string) {
-        return this.call.transfer(to, value)
-    }
-
-    async allowance(owner: Address, spender: Address): Promise<bigint> {
-        return this.call.allowance(owner, spender)
+        return this.waitAndReturn(
+            this.call.transfer(to, value)
+        )
     }
 
     async approve(spender: Address, value: string) {
-        return this.call.approve(spender, value)
+        return this.waitAndReturn(
+            this.call.approve(spender, value)
+        )
     }
 
     async transferFrom(from: Address, to: Address, value: string) {
-        return this.call.transferFrom(from, to, value)
+        return this.waitAndReturn(
+            this.call.transferFrom(from, to, value)
+        )
     }   
-
-    async name(): Promise<string> {
-        return this.call.name()
-    }
-
-    async symbol(): Promise<string> {
-        return this.call.symbol()
-    }
-
-    async decimals(): Promise<bigint> {
-        return this.call.decimals()
-    }
 
     get call() {
         return this.contract as unknown as ERC20

@@ -20,44 +20,22 @@ export class ERC721Wrapper extends BaseWrapper {
         super(contract, provider)
     }
 
-    async balanceOf(owner: Address): Promise<bigint> {
-        return this.call.balanceOf(owner)
-    }
-
-    async ownerOf(tokenId: string): Promise<Address> {
-        return this.call.ownerOf(tokenId)
-    }
-
     async transferFrom(from: Address, to: Address, tokenId: string) {
-        return this.call.transferFrom(from, to, tokenId)
+        return this.waitAndReturn(
+            this.call.transferFrom(from, to, tokenId)
+        )
     }
 
     async approve(to: Address, tokenId: string) {
-        return this.call.approve(to, tokenId)
+        return this.waitAndReturn(
+            this.call.approve(to, tokenId)
+        )
     }
 
     async setApprovalForAll(operator: Address, approved: boolean) {
-        return this.call.setApprovalForAll(operator, approved)
-    }
-
-    async getApproved(tokenId: string): Promise<Address> {
-        return this.call.getApproved(tokenId)
-    }
-
-    async isApprovedForAll(owner: Address, operator: Address): Promise<boolean> {
-        return this.call.isApprovedForAll(owner, operator)
-    }
-
-    async name(): Promise<string> {
-        return this.call.name()
-    }
-
-    async symbol(): Promise<string> {
-        return this.call.symbol()
-    }
-
-    async tokenUri(tokenId: string): Promise<string> {
-        return this.call.tokenURI(tokenId)
+        return this.waitAndReturn(
+            this.call.setApprovalForAll(operator, approved)
+        )
     }
 
     get call() {
