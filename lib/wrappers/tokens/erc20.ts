@@ -14,10 +14,11 @@ import { abi as ERC20ABI } from "../../../artifacts/@openzeppelin/contracts/toke
 export class ERC20Wrapper extends BaseWrapper {
     constructor(
         address: AddressOrAddressable, 
-        provider: SupportedProvider
+        provider: SupportedProvider,
+        confirmations: number = 1
     ) {
         const contract = new Contract(address, ERC20ABI, provider)
-        super(contract, provider)
+        super(contract, provider, confirmations)
     }
 
     async transfer(to: Address, value: string) {
