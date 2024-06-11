@@ -1,7 +1,7 @@
 import {
     Signer,
     Contract,
-    Transaction,
+    TransactionResponse,
     AddressLike,
     Addressable,
 } from "ethers";
@@ -9,7 +9,7 @@ import {
 import {
     Address,
     SupportedProvider,
-} from "./types";
+} from "../types";
 
 
 export default abstract class BaseWrapper implements Addressable {
@@ -66,7 +66,7 @@ export default abstract class BaseWrapper implements Addressable {
         return this.contract.target
     }
 
-    protected async waitAndReturn(transactionPromise: Promise<Transaction>) {
+    protected async waitAndReturn(transactionPromise: Promise<TransactionResponse>) {
         const transaction = await transactionPromise ;
         this.provider.waitForTransaction(transaction.hash as string, this.confirmations) ;
         return transaction ;
