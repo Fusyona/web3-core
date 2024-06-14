@@ -4,10 +4,13 @@ import {
     TransactionResponse,
     AddressLike,
     Addressable,
+    Interface,
+    InterfaceAbi,
 } from "ethers";
 
 import {
     Address,
+    AddressOrAddressable,
     SupportedProvider,
 } from "./types";
 
@@ -17,14 +20,15 @@ export default abstract class BaseWrapper implements Addressable {
     protected provider!: SupportedProvider;
     protected signer: Signer | undefined;
     protected confirmations: number | undefined;
-
+    
     constructor(
-        contract: Contract,
+        address: AddressOrAddressable,
+        abi: Interface | InterfaceAbi,
         provider: SupportedProvider,
         confirmations: number = 1,
     ) {
         this.setProvider(provider);
-        this.setContract(contract);
+        this.setContract(new Contract(address, abi, provider));
         this.confirmations = confirmations;
     }
 
