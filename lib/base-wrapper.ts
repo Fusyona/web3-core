@@ -68,7 +68,7 @@ export default abstract class BaseWrapper implements Addressable {
 
     protected async waitAndReturn(transactionPromise: Promise<TransactionResponse>) {
         const transaction = await transactionPromise ;
-        this.provider.waitForTransaction(transaction.hash as string, this.confirmations) ;
+        await this.provider.waitForTransaction(transaction.hash as string, this.confirmations) ;
         return transaction ;
     }
 }
