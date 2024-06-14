@@ -1,6 +1,6 @@
 {
     "name": "@fusyfox/web3-core",
-    "version": "0.4.22",
+    "version": "0.4.23",
     "description": "Fusyona web3 tools library.",
     "main": "dist/lib/main.js",
     "types": "dist/lib/main.d.ts",
@@ -30,7 +30,7 @@
         "compile": "pnpm hardhat compile",
         "build": "tsc",
         "test": "pnpm hardhat test",
-        "prepublishOnly": "pnpm run build",
+        "prepublishOnly": "pnpm compile & pnpm build",
         "gitconfig": "git config core.hooksPath .githooks",
         "release:create": "VERSION=$(git describe main --tags --abbrev=0) ; git push origin $VERSION ; gh release create $VERSION --generate-notes",
         "release:create:ps": "powershell -Command \"$VERSION = $(git describe main --tags); git push origin main --tags; if ($VERSION -like '*beta*') { gh release create $VERSION --generate-notes --prerelease } else { gh release create $VERSION --generate-notes }\"",
