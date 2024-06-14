@@ -9,7 +9,7 @@ import {
 import {
     Address,
     SupportedProvider,
-} from "../types";
+} from "./types";
 
 
 export default abstract class BaseWrapper implements Addressable {
