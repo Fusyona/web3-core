@@ -65,5 +65,10 @@
         "chainId": 713715,
         "url": "https://evm-rpc-arctic-1.sei-apis.com/",
         "explorerUrl": "https://seistream.app/"
+    },
+    "ternoaZkevmTestnet" : {
+        "chainId": 752024,
+        "url": "https://rpc.zkevm.ternoa.network",
+        "explorerUrl": "https://explorer.zkevm.ternoa.network"
     }
 }
