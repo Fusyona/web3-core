@@ -1,6 +1,6 @@
 {
     "name": "@fusyfox/web3-core",
-    "version": "0.4.23",
+    "version": "0.4.24-beta.0",
     "description": "Fusyona web3 tools library.",
     "main": "dist/lib/main.js",
     "types": "dist/lib/main.d.ts",
@@ -35,7 +35,8 @@
         "release:create": "VERSION=$(git describe main --tags --abbrev=0) ; git push origin $VERSION ; gh release create $VERSION --generate-notes",
         "release:create:ps": "powershell -Command \"$VERSION = $(git describe main --tags); git push origin main --tags; if ($VERSION -like '*beta*') { gh release create $VERSION --generate-notes --prerelease } else { gh release create $VERSION --generate-notes }\"",
         "release:publish": "powershell -Command \"$VERSION = $(git describe main --tags); if ($VERSION -like '*beta*') { pnpm publish --no-git-checks --tag beta } else { pnpm publish --no-git-checks }\"",
-        "release": "pnpm release:create && pnpm release:publish"
+        "release": "pnpm release:create && pnpm release:publish",
+        "release:ps": "pnpm release:create:ps && pnpm release:publish"
     },
     "devDependencies": {
         "@commitlint/cli": "^19.1.0",
