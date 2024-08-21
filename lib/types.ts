@@ -1,6 +1,7 @@
-import { BrowserProvider, JsonRpcProvider, Addressable, ContractTransaction } from "ethers";
+import { BrowserProvider, JsonRpcProvider, Addressable, ContractTransaction, Provider } from "ethers";
 
 import networks from "./networks.json" ;
+import { EthereumProvider } from "hardhat/types";
 
 
 export type Address = string ;
