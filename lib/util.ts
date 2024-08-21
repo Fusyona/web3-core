@@ -1,8 +1,8 @@
-import { TransactionResponse } from "ethers";
+import { ContractTransactionResponse, TransactionResponse } from "ethers";
 
-export async function waitAndReturn(
-    transactionPromise: Promise<TransactionResponse>,
-    confirmations: number | undefined = undefined
+export async function waitAndReturn<T extends TransactionResponse | ContractTransactionResponse>(
+    transactionPromise: Promise<T>,
+    confirmations: number | undefined = undefined,
 ) {
     const transaction = await transactionPromise;
     await transaction.wait(confirmations);
