@@ -1,4 +1,4 @@
-import { BrowserProvider, JsonRpcProvider, Addressable, ContractTransaction } from "ethers";
+import { BrowserProvider, JsonRpcProvider, Addressable, ContractTransaction, BaseContract } from "ethers";
 
 import networks from "./networks";
 
