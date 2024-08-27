@@ -1,6 +1,6 @@
 import { Signer, Contract, AddressLike, Addressable, ContractTransactionResponse } from "ethers";
-
 import { Address } from "./types";
+import assert from "assert";
 
 export default abstract class BaseWrapper implements Addressable {
     protected contract!: Contract;
@@ -12,13 +12,20 @@ export default abstract class BaseWrapper implements Addressable {
         this.confirmations = confirmations;
     }
 
+    setContract(contract: Contract) {
+        this.contract = contract;
+    }
+
+    requireProvider() {
+        const provider = this.contract.runner?.provider;
+        assert(provider, "Provider is not available");
+
+        return provider;
+    }
+
     withContract(contract: Contract) {
         this.setContract(contract);
         return this;
-    }
-
-    setContract(contract: Contract) {
-        this.contract = contract;
     }
 
     // https://github.com/OpenZeppelin/openzeppelin-upgrades/blob/2ef7aa554c3b31821a79a99131751fb07b5b0298/packages/plugin-hardhat/src/utils/ethers.ts#L6-L8
