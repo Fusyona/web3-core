@@ -2,19 +2,13 @@ import { Signer, Contract, AddressLike, Addressable, ContractTransactionResponse
 import { Address, SupportedProvider } from "./types";
 import assert from "assert";
 
-export default abstract class BaseWrapper implements Addressable {
-    protected contract!: Contract;
+export default abstract class BaseWrapper<T extends Contract> implements Addressable {
     protected signer: Signer | undefined;
-    protected confirmations: number | undefined;
 
-    constructor(contract: Contract, confirmations: number = 1) {
-        this.setContract(contract);
-        this.confirmations = confirmations;
-    }
-
-    setContract(contract: Contract) {
-        this.contract = contract;
-    }
+    constructor(
+        private contract: T,
+        private confirmations: number = 1,
+    ) {}
 
     protected async requireConnectedAddress() {
         const connectedSigner = await this.requireSigner();
@@ -37,20 +31,20 @@ export default abstract class BaseWrapper implements Addressable {
         return provider;
     }
 
-    withContract(contract: Contract) {
-        this.setContract(contract);
+    withContract(contract: T) {
+        this.contract = contract;
         return this;
     }
 
     // https://github.com/OpenZeppelin/openzeppelin-upgrades/blob/2ef7aa554c3b31821a79a99131751fb07b5b0298/packages/plugin-hardhat/src/utils/ethers.ts#L6-L8
     withSigner(signer: Signer) {
-        this.contract = this.contract.connect(signer) as Contract;
+        this.contract = this.contract.connect(signer) as T;
         this.signer = signer;
         return this;
     }
 
-    async getAddress(): Promise<Address> {
-        return await this.contract.getAddress();
+    getAddress(): Promise<Address> {
+        return this.contract.getAddress();
     }
 
     get address(): AddressLike {
@@ -63,13 +57,11 @@ export default abstract class BaseWrapper implements Addressable {
         return transaction;
     }
 
-    protected async connectSignerAndTransact<T extends Contract>(
+    protected async connectSignerAndTransact(
         transactCallback: (connectedContract: T) => Promise<ContractTransactionResponse>,
     ) {
         const connectedSigner = await this.requireSigner();
-        const connectedContract = this.typedContract<T>().connect(connectedSigner) as T;
+        const connectedContract = this.contract.connect(connectedSigner) as T;
         return this.waitAndReturn(transactCallback(connectedContract));
     }
-
-    protected abstract typedContract<T extends Contract>(): T;
 }
