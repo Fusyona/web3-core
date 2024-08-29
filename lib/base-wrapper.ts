@@ -62,4 +62,14 @@ export default abstract class BaseWrapper implements Addressable {
         await transaction.wait(this.confirmations);
         return transaction;
     }
+
+    protected async connectSignerAndTransact<T extends Contract>(
+        transactCallback: (connectedContract: T) => Promise<ContractTransactionResponse>,
+    ) {
+        const connectedSigner = await this.requireSigner();
+        const connectedContract = this.typedContract<T>().connect(connectedSigner) as T;
+        return this.waitAndReturn(transactCallback(connectedContract));
+    }
+
+    protected abstract typedContract<T extends Contract>(): T;
 }
