@@ -1,8 +1,8 @@
-import { Signer, Contract, AddressLike, Addressable, ContractTransactionResponse } from "ethers";
+import { Signer, AddressLike, Addressable, ContractTransactionResponse, BaseContract } from "ethers";
 import { Address, SupportedProvider } from "./types";
 import assert from "assert";
 
-export default abstract class BaseWrapper<T extends Contract> implements Addressable {
+export default abstract class BaseWrapper<T extends BaseContract> implements Addressable {
     protected signer: Signer | undefined;
 
     constructor(
