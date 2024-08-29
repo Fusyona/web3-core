@@ -6,7 +6,7 @@ export default abstract class BaseWrapper<T extends BaseContract> implements Add
     protected signer: Signer | undefined;
 
     constructor(
-        private contract: T,
+        protected contract: T,
         private confirmations: number = 1,
     ) {}
 
