@@ -1,5 +1,5 @@
 import { Signer, Contract, AddressLike, Addressable, ContractTransactionResponse } from "ethers";
-import { Address } from "./types";
+import { Address, SupportedProvider } from "./types";
 import assert from "assert";
 
 export default abstract class BaseWrapper implements Addressable {
@@ -16,7 +16,21 @@ export default abstract class BaseWrapper implements Addressable {
         this.contract = contract;
     }
 
-    requireProvider() {
+    protected async requireConnectedAddress() {
+        const connectedSigner = await this.requireSigner();
+        return connectedSigner.getAddress();
+    }
+
+    protected requireSigner() {
+        const supportedProvider = this.requireSupportedProvider();
+        return supportedProvider.getSigner();
+    }
+
+    protected requireSupportedProvider() {
+        return this.requireProvider() as SupportedProvider;
+    }
+
+    protected requireProvider() {
         const provider = this.contract.runner?.provider;
         assert(provider, "Provider is not available");
 
