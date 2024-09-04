@@ -3,7 +3,7 @@ import { ChainConfig } from "@nomicfoundation/hardhat-verify/types";
 
 import { NetworkConfigData, SupportedNetworkName } from "./types";
 import networks from "./networks";
-import ApiKeyGetter from "./api-key-getter/api-key-getter";
+import StaticApiKeyGetter from "./api-key-getter/static-api-key-getter";
 
 export class NetworkConfig {
     public name: string;
@@ -32,7 +32,7 @@ export class NetworkConfig {
     useRpcUrl(rpcUrl: string) {
         if (!this.rpcUrlNeedsApiKey(rpcUrl)) return rpcUrl;
 
-        const apiKey = ApiKeyGetter.get(this.rpcUrlApiKeyName(rpcUrl));
+        const apiKey = StaticApiKeyGetter.get(this.rpcUrlApiKeyName(rpcUrl));
         return rpcUrl.replace(this.rpcUrlApiKeyPattern(rpcUrl), apiKey);
     }
 
