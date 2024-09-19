@@ -32,7 +32,7 @@ export default {
 
     sepolia: {
         chainId: 11155111,
-        rpcUrl: "https://sepolia.infura.io/v3/{PROVIDER_API_KEY}",
+        rpcUrl: "https://sepolia.infura.io/v3/7d2ecd41c400446585a5d7d8aa93c78d",
 
     },
     mumbai: {
