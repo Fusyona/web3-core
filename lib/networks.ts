@@ -64,6 +64,11 @@ export default {
         explorerUrl: "https://scan.test.btcs.network/",
     },
     seiTestnet: {
+        chainId: 1328,
+        rpcUrl: "https://evm-rpc-testnet.sei-apis.com/",
+        explorerUrl: "https://seistream.app/",
+    },
+    seiDevnet: {
         chainId: 713715,
         rpcUrl: "https://evm-rpc-arctic-1.sei-apis.com/",
         explorerUrl: "https://seistream.app/",
