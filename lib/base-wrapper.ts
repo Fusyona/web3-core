@@ -1,19 +1,27 @@
-import { Signer, AddressLike, Addressable, ContractTransactionResponse, BaseContract } from "ethers";
-import { Address, SupportedProvider } from "./types";
 import assert from "assert";
+import {
+    Signer,
+    AddressLike,
+    Addressable,
+    ContractTransactionResponse,
+    BaseContract,
+    ContractRunner,
+} from "ethers";
+import {
+    Address,
+    SupportedProvider,
+    errors
+} from "./types";
 
 export default abstract class BaseWrapper<T extends BaseContract> implements Addressable {
     protected signer: Signer | undefined;
     protected signerIndexOrAddress?: number | Address;
 
-    constructor(
-        protected contract: T,
-        private confirmations: number = 1,
-    ) {}
 
-    protected async requireConnectedAddress() {
-        const connectedSigner = await this.requireSigner();
-        return connectedSigner.getAddress();
+    constructor(public contract: T, private confirmations: number = 1) {}
+
+    get runner() {
+        return this.contract.runner
     }
 
     protected requireSigner(indexOrAddress?: number | Address) {
@@ -21,20 +29,35 @@ export default abstract class BaseWrapper<T extends BaseContract> implements Add
         return supportedProvider.getSigner(indexOrAddress);
     }
 
-    protected requireSupportedProvider() {
-        return this.requireProvider() as SupportedProvider;
+    requireSigner() {
+        assert(this.hasSigner(), errors.NoSigner)
+        return this.runner as Signer
     }
 
-    protected requireProvider() {
-        const provider = this.contract.runner?.provider;
-        assert(provider, "Provider is not available");
+    hasSigner() {
+        return this.runner?.sendTransaction !== undefined
+    }
 
-        return provider;
+    requireSupportedProvider() {
+        return this.requireProvider() as SupportedProvider
+    }
+
+    requireProvider() {
+        assert(this.hasProvider(), errors.NoProvider)
+        return this.runner?.provider
+    }
+
+    hasProvider() {
+        return this.runner?.provider !== undefined
+    }
+
+    hasRunner(contract: BaseContract) {
+        return contract.runner !== undefined
     }
 
     withContract(contract: T) {
-        this.contract = contract;
-        return this;
+        this.contract = contract
+        return this
     }
 
     // https://github.com/OpenZeppelin/openzeppelin-upgrades/blob/2ef7aa554c3b31821a79a99131751fb07b5b0298/packages/plugin-hardhat/src/utils/ethers.ts#L6-L8
@@ -44,7 +67,7 @@ export default abstract class BaseWrapper<T extends BaseContract> implements Add
     }
 
     getAddress(): Promise<Address> {
-        return this.contract.getAddress();
+        return this.contract.getAddress()
     }
 
     protected async getConnectedAddress(): Promise<Address> {
@@ -53,20 +76,25 @@ export default abstract class BaseWrapper<T extends BaseContract> implements Add
     }
 
     get address(): AddressLike {
-        return this.contract.target;
+        return this.contract.target
     }
 
-    protected async waitAndReturn(transactionPromise: Promise<ContractTransactionResponse>) {
-        const transaction = await transactionPromise;
-        await transaction.wait(this.confirmations);
-        return transaction;
+    async confirm(response: Promise<ContractTransactionResponse>) {
+        const transaction = await response 
+        const receipt = await transaction.wait(this.confirmations)
+        return { transaction, receipt }
     }
 
+    /**
+     * It is responsability of the consumer to ensure that `contract`
+     * has a `signer` connected or otherwise use `withRunner`
+     */ 
     protected async connectSignerAndTransact(
-        transactCallback: (connectedContract: T) => Promise<ContractTransactionResponse>,
+        callback: (contract: T) => Promise<ContractTransactionResponse>,
     ) {
         const connectedSigner = await this.requireSigner(this.signerIndexOrAddress);
         const connectedContract = this.contract.connect(connectedSigner) as T;
         return this.waitAndReturn(transactCallback(connectedContract));
     }
+
 }
