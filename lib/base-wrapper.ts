@@ -58,12 +58,12 @@ export default abstract class BaseWrapper<T extends BaseContract> implements Add
     }
 
     withAddress(address: Address) {
-        this.contract.attach(address)
+        this.contract = this.contract.attach(address) as T
         return this
     }
 
     withRunner(runner: ContractRunner) {
-        this.contract.connect(runner)
+        this.contract = this.contract.connect(runner) as T
         return this
     }
 
