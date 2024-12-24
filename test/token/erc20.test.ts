@@ -65,6 +65,17 @@ describe("ERC20 token wrapper", function () {
         expect(postBalance).to.equal(preBalance+amount*2n);
     });
 
+    it("should decrease balance from sender", async function() {
+      const preBalance = await wrapper.contractCall.balanceOf(await alice.getAddress())
+      const amount = parseEther("10")
+
+      await wrapper.withSigner(await alice.getAddress()).transfer(await bob.getAddress(), amount)
+
+      const postBalance = await wrapper.contractCall.balanceOf(await alice.getAddress())
+
+      expect(postBalance).to.equal(preBalance-amount)
+    })
+
     it("should approve andtransfer from another account", async function () {      
       const initialOwnerBalance = await wrapper.contractCall.balanceOf(await owner.getAddress());
       const amount = parseEther("10")
