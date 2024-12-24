@@ -19,7 +19,6 @@ export default class ERC20 extends ERC20NoWallet {
     }
 
     async transfer(to: Address, amount: bigint) {
-        console.log(await this.getConnectedAddress())
         return this.connectSignerAndTransact(c => c.transfer(to, amount))
     }
 
