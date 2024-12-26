@@ -3,7 +3,6 @@ import { Address, SupportedProvider } from "./types";
 import assert from "assert";
 
 export default abstract class BaseWrapper<T extends BaseContract> implements Addressable {
-    protected signer: Signer | undefined;
     protected signerIndexOrAddress?: number | Address;
 
     constructor(
