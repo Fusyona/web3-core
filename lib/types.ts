@@ -1,23 +1,33 @@
-import { BrowserProvider, JsonRpcProvider, Addressable, ContractTransaction, BaseContract } from "ethers";
+import {
+    BrowserProvider,
+    JsonRpcProvider,
+    Addressable,
+    ContractTransaction,
+} from "ethers"
+import networks from "./networks"
 
-import networks from "./networks";
 
-export type Address = string;
-export type AddressOrAddressable = Address | Addressable;
+export const NATIVE_COIN = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+export type Address = string
+export type AddressOrAddressable = Address | Addressable
 
-export type SupportedProvider = BrowserProvider | JsonRpcProvider;
-
-export type SupportedNetworkName = keyof typeof networks;
+export type SupportedProvider = BrowserProvider | JsonRpcProvider
+export type SupportedNetworkName = keyof typeof networks
 
 export interface NetworkConfigData {
-    rpcUrl: string;
-    chainId: number;
-    explorerUrl?: string;
+    rpcUrl: string
+    chainId: number
+    explorerUrl?: string
 }
 
 export type NonTransactionFunctions<T> = Pick<
     T,
     {
-        [K in keyof T]: Exclude<T[K], (...args: any[]) => Promise<ContractTransaction>> extends never ? never : K;
+        [K in keyof T]: Exclude<T[K], (...args: any[]) => Promise<ContractTransaction>> extends never ? never : K
     }[keyof T]
 >;
+
+export namespace errors {
+    export const NoSigner = new Error("no signer connected")
+    export const NoProvider = new Error("no provider connected")
+}
