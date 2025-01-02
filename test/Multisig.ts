@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { ethers, deployments, getUnnamedAccounts } from "hardhat";
 import { MSExample } from "../typechain-types";
+import { Signer } from "ethers";
 
 describe("Multisig", async function () {
     const signCount = 4;
@@ -9,7 +10,7 @@ describe("Multisig", async function () {
         await deployments.fixture("MSExample");
 
         const signerAddresses = await getUnnamedAccounts();
-        let signers: ethers.Signer[] = [];
+        let signers: Signer[] = [];
 
         for (let i = 0; i < signerAddresses.length; i++) {
             signers.push(await ethers.getSigner(signerAddresses[i]));
@@ -27,7 +28,7 @@ describe("Multisig", async function () {
             const { signers, multisigExampleContract } = await setup();
 
             for (let i = 0; i < 2 * signCount; i++)
-                expect(await multisigExampleContract.signers(i)).to.equal(signers[i].address);
+                expect(await multisigExampleContract.signers(i)).to.equal(await signers[i].getAddress());
         });
     });
 
