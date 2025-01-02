@@ -11,7 +11,7 @@ export default abstract class BaseWrapper<T extends BaseContract> implements Add
     ) {}
 
     protected async requireConnectedAddress() {
-        const connectedSigner = await this.requireSigner();
+        const connectedSigner = await this.requireSigner(this.signerIndexOrAddress);
         return connectedSigner.getAddress();
     }
 
@@ -47,8 +47,8 @@ export default abstract class BaseWrapper<T extends BaseContract> implements Add
     }
 
     protected async getConnectedAddress(): Promise<Address> {
-        const signer = await this.requireSigner(this.signerIndexOrAddress)
-        return signer.getAddress()
+        const signer = await this.requireSigner(this.signerIndexOrAddress);
+        return signer.getAddress();
     }
 
     get address(): AddressLike {
