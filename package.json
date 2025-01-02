@@ -1,6 +1,6 @@
 {
     "name": "@fusyfox/web3-core",
-    "version": "0.5.2",
+    "version": "0.6.0",
     "description": "Fusyona web3 tools library.",
     "main": "dist/lib/main.js",
     "types": "dist/lib/main.d.ts",
