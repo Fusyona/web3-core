@@ -8,6 +8,11 @@ export type TokenHolder = {
     balance: bigint;
 }
 
+export type TokenHoldersResponse = {
+    holders: TokenHolder[];
+    nextOffset: number;
+}
+
 export const getTokenHolders = async (tokenAddress: Address, provider: SupportedProvider, offset: string, blocks = DEFAULT_BLOCK_STEP) => {    
     const {chainId} = await provider.getNetwork();
     const erc20 = new ERC20NoWallet(tokenAddress, Number(chainId), provider);
@@ -34,8 +39,11 @@ export const getTokenHolders = async (tokenAddress: Address, provider: Supported
             balance: holdersMap[address]
         })
     });
+
+    const lastBlock = await provider.getBlockNumber();
+    const nextOffset = Number(offset) + blocks <= lastBlock ? Number(offset) + blocks + 1 : lastBlock;
     
-    return holders;
+    return {holders, nextOffset};
 }
 
 export default getTokenHolders;
