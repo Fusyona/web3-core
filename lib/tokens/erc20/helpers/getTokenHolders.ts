@@ -1,6 +1,7 @@
 import { Address, SupportedProvider } from "../../../types";
 import ERC20NoWallet from "../ERC20NoWallet";
-
+import networks from "../../../networks";
+import { JsonRpcProvider } from "ethers";
 const DEFAULT_BLOCK_STEP = 10000;
 
 export type TokenHolder = {
@@ -13,8 +14,18 @@ export type TokenHoldersResponse = {
     nextOffset: number;
 }
 
-export const getTokenHolders = async (tokenAddress: Address, provider: SupportedProvider, offset: string, blocks = DEFAULT_BLOCK_STEP) => {    
-    const {chainId} = await provider.getNetwork();
+function getProvider(chainId: number): SupportedProvider {
+    const network = Object.values(networks).find(network => network.chainId === chainId);
+    if (!network) {
+        throw new Error(`Network with chainId ${chainId} not found`);
+    }
+    return new JsonRpcProvider(network.rpcUrl);
+}
+
+export const getTokenHolders = async (tokenAddress: Address, chainId: number, offset: string, blocks = DEFAULT_BLOCK_STEP, provider?: SupportedProvider) => {   
+    if (!provider) {
+        provider = getProvider(chainId);
+    }
     const erc20 = new ERC20NoWallet(tokenAddress, Number(chainId), provider);
 
     const filter = erc20.contractCall.filters.Transfer();
