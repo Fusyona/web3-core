@@ -40,26 +40,26 @@ describe("helpers/getTokenHolders", function () {
     }
 
     it("should return the correct holders amount", async function () {
-        const holders = await getTokenHolders(await token.getAddress(), ethers.provider as any, "0x0");
+        const { holders } = await getTokenHolders(await token.getAddress(), ethers.provider as any, "0x0");
         expect(holders.length).to.equal(signerCount);
     });
 
     it("should return the proper alice balance", async function () {
-        const holders = await getTokenHolders(await token.getAddress(), ethers.provider as any, "0x0");
+        const { holders } = await getTokenHolders(await token.getAddress(), ethers.provider as any, "0x0");
         const aliceAddress = await alice.getAddress();
         const aliceBalance = holders.find(holder => holder.address === aliceAddress)?.balance;
         expect(aliceBalance).to.equal(await token.balanceOf(aliceAddress));
     });
 
     it("should return the proper bob balance", async function () {
-        const holders = await getTokenHolders(await token.getAddress(), ethers.provider as any, "0x0");
+        const { holders } = await getTokenHolders(await token.getAddress(), ethers.provider as any, "0x0");
         const bobAddress = await bob.getAddress();
         const bobBalance = holders.find(holder => holder.address === bobAddress)?.balance;
         expect(bobBalance).to.equal(await token.balanceOf(bobAddress));
     });     
 
     it("should return the proper owner balance", async function () {
-        const holders = await getTokenHolders(await token.getAddress(), ethers.provider as any, "0x0");
+        const { holders } = await getTokenHolders(await token.getAddress(), ethers.provider as any, "0x0");
         const ownerAddress = await owner.getAddress();
         const ownerBalance = holders.find(holder => holder.address === ownerAddress)?.balance;
         expect(ownerBalance).to.equal(await token.balanceOf(ownerAddress));
@@ -67,7 +67,7 @@ describe("helpers/getTokenHolders", function () {
 
     it("should return modified balances from the sender after a transfer", async function () {
         await token.connect(owner).transfer(await bob.getAddress(), parseEther("1000"));
-        const holders = await getTokenHolders(await token.getAddress(), ethers.provider as any, "0x0");
+        const { holders } = await getTokenHolders(await token.getAddress(), ethers.provider as any, "0x0");
         const ownerAddress = await owner.getAddress();
         const ownerBalance = holders.find(holder => holder.address === ownerAddress)?.balance;
         expect(ownerBalance).to.equal(await token.balanceOf(ownerAddress));
@@ -75,7 +75,7 @@ describe("helpers/getTokenHolders", function () {
 
     it("should return modified balances from the receiver after a transfer", async function () {
         await token.connect(owner).transfer(await bob.getAddress(), parseEther("1000"));
-        const holders = await getTokenHolders(await token.getAddress(), ethers.provider as any, "0x0");
+        const { holders } = await getTokenHolders(await token.getAddress(), ethers.provider as any, "0x0");
         const bobAddress = await bob.getAddress();
         const bobBalance = holders.find(holder => holder.address === bobAddress)?.balance;
         expect(bobBalance).to.equal(await token.balanceOf(bobAddress));
