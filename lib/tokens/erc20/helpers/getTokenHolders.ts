@@ -1,3 +1,4 @@
+import { ZeroAddress } from "ethers"
 import { Address, SupportedProvider } from "../../../types";
 import ERC20NoWallet from "../ERC20NoWallet";
 import networks from "../../../networks";
@@ -35,11 +36,11 @@ export const getTokenHolders = async (tokenAddress: Address, chainId: number, of
     const holders: TokenHolder[] = []
 
     events.forEach(event => {
-        if (event.args.from !== '0x0000000000000000000000000000000000000000') {
+        if (event.args.from !== ZeroAddress) {
             holdersMap[event.args.from] = (holdersMap[event.args.from] || 0n) - event.args.value;
         }
 
-        if (event.args.to !== '0x0000000000000000000000000000000000000000') {
+        if (event.args.to !== ZeroAddress) {
             holdersMap[event.args.to] = (holdersMap[event.args.to] || 0n) + event.args.value;
         }
     });
