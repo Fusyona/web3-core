@@ -10,7 +10,7 @@ const func: DeployFunction = async function (env: HardhatRuntimeEnvironment) {
         const { deployments, getNamedAccounts } = env;
         const { deploy } = deployments;
         const { deployer } = await getNamedAccounts();
-        const addresses = (await ethers.getSigners()).map((s) => s.address);
+        const addresses = (await ethers.getSigners() ).map((s) => s.address);
 
         await deploy(contractNames.MockERC20, {
             from: deployer,
