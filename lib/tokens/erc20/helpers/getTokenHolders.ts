@@ -1,8 +1,8 @@
 import { ZeroAddress } from "ethers"
 import { Address, SupportedProvider } from "../../../types";
 import ERC20NoWallet from "../ERC20NoWallet";
-import networks from "../../../networks";
-import { JsonRpcProvider } from "ethers";
+import { getProvider, toHexString } from "./utils";
+
 const DEFAULT_BLOCK_STEP = 10000;
 
 export type TokenHolder = {
@@ -15,14 +15,6 @@ export type TokenHoldersResponse = {
     nextOffset: number;
 }
 
-function getProvider(chainId: number): SupportedProvider {
-    const network = Object.values(networks).find(network => network.chainId === chainId);
-    if (!network) {
-        throw new Error(`Network with chainId ${chainId} not found`);
-    }
-    return new JsonRpcProvider(network.rpcUrl);
-}
-
 export const getTokenHolders = async (tokenAddress: Address, chainId: number, offset: string, blocks = DEFAULT_BLOCK_STEP, provider?: SupportedProvider) => {   
     if (!provider) {
         provider = getProvider(chainId);
@@ -30,7 +22,7 @@ export const getTokenHolders = async (tokenAddress: Address, chainId: number, of
     const erc20 = new ERC20NoWallet(tokenAddress, Number(chainId), provider);
 
     const filter = erc20.contractCall.filters.Transfer();
-    const events = await erc20.contractCall.queryFilter(filter, offset, blocks);
+    const events = await erc20.contractCall.queryFilter(filter, toHexString(offset), blocks);
 
     const holdersMap: Record<Address, bigint> = {}
     const holders: TokenHolder[] = []
