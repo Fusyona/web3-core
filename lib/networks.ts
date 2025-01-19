@@ -87,4 +87,9 @@ export default {
         rpcUrl: "https://sepolia.base.org",
         explorerUrl: "https://sepolia.basescan.org",
     },
+
+    hardhat: {
+        chainId: 31337,
+        rpcUrl: "http://127.0.0.1:8545",
+    },
 } as const;
