@@ -29,11 +29,15 @@ export default {
         rpcUrl: "https://rpc.coredao.org/",
         explorerUrl: "https://scan.coredao.org/",
     },
+    sei: {
+        chainId: 1329,
+        rpcUrl: "https://evm-rpc.sei-apis.com",
+        explorerUrl: "https://seitrace.com/?chain=pacific-1",
+    },
 
     sepolia: {
         chainId: 11155111,
         rpcUrl: "https://sepolia.infura.io/v3/7d2ecd41c400446585a5d7d8aa93c78d",
-
     },
     mumbai: {
         chainId: 80001,
@@ -66,16 +70,21 @@ export default {
     seiTestnet: {
         chainId: 1328,
         rpcUrl: "https://evm-rpc-testnet.sei-apis.com/",
-        explorerUrl: "https://seistream.app/",
+        explorerUrl: "https://seitrace.com/?chain=atlantic-2",
     },
     seiDevnet: {
         chainId: 713715,
         rpcUrl: "https://evm-rpc-arctic-1.sei-apis.com/",
-        explorerUrl: "https://seistream.app/",
+        explorerUrl: "https://seitrace.com/?chain=arctic-1",
     },
     ternoaZkevmTestnet: {
         chainId: 752024,
         rpcUrl: "https://rpc.zkevm.ternoa.network",
         explorerUrl: "https://explorer.zkevm.ternoa.network",
     },
-} as Record<string, NetworkConfigData>;
+    baseSepolia: {
+        chainId: 84532,
+        rpcUrl: "https://sepolia.base.org",
+        explorerUrl: "https://sepolia.basescan.org",
+    },
+} as const;
