@@ -91,7 +91,6 @@ describe("Multicall3", function () {
         ];
         await expect(multicaller.withSigner(deployerAddress).multicall(...calls)).to.be.not.reverted;
     });
-    });
 
     describe("contract", () => {
         describe("aggregate3", async function () {
