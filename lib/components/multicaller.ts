@@ -31,7 +31,7 @@ export class Multicaller extends BaseWrapper<Multicall3> {
         return Number(chainId.toString());
     }
 
-    async multicall(calls: Call[]) {
+    async multicall(...calls: Call[]) {
         const contractParam = await Multicaller.mapCallsToContractCalls(calls);
         return this.connectSignerAndTransact((c) => c.aggregate3(contractParam));
     }

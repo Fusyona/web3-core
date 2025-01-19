@@ -56,12 +56,12 @@ describe("Multicall3", function () {
             to(mockTokenAContract, "transferFrom", [deployerAddress, accounts[1], 100]),
             to(mockTokenBContract, "transferFrom", [deployerAddress, accounts[1], 200]),
         ];
-        await expect(multicaller.withSigner(deployerAddress).multicall(calls)).to.changeTokenBalances(
+        await expect(multicaller.withSigner(deployerAddress).multicall(...calls)).to.changeTokenBalances(
             mockTokenAContract,
             [deployerAddress, accounts[1]],
             [-100, 100],
         );
-        await expect(multicaller.withSigner(deployerAddress).multicall(calls)).to.changeTokenBalances(
+        await expect(multicaller.withSigner(deployerAddress).multicall(...calls)).to.changeTokenBalances(
             mockTokenBContract,
             [deployerAddress, accounts[1]],
             [-200, 200],
@@ -76,7 +76,7 @@ describe("Multicall3", function () {
             to(mockTokenAContract, "transferFrom", [deployerAddress, accounts[1], 100]),
             to(mockTokenBContract, "transferFrom", [deployerAddress, accounts[1], 200]),
         ];
-        await expect(multicaller.withSigner(deployerAddress).multicall(calls)).to.be.revertedWith(
+        await expect(multicaller.withSigner(deployerAddress).multicall(...calls)).to.be.revertedWith(
             "Multicall3: call failed",
         );
     });
@@ -89,7 +89,8 @@ describe("Multicall3", function () {
             to(mockTokenAContract, "transferFrom", [deployerAddress, accounts[1], 100]),
             to(mockTokenBContract, "transferFrom", [deployerAddress, accounts[1], 200], true),
         ];
-        await expect(multicaller.withSigner(deployerAddress).multicall(calls)).to.be.not.reverted;
+        await expect(multicaller.withSigner(deployerAddress).multicall(...calls)).to.be.not.reverted;
+    });
     });
 
     describe("contract", () => {
