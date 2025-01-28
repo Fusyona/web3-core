@@ -1,10 +1,11 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { getTokenHolders } from "../../../lib/tokens/erc20/helpers/getTokenHolders";
-import * as typechain from "../../../typechain-types";
-import contractNames from "../../../data/contractNames.json";
-import { deployContract } from "../../../utils/functions";
 import { Signer, parseEther } from "ethers";
+
+import getTokenHolders from "../../../lib/tokens/erc20/helpers/getTokenHolders";
+import { deployContract } from "../../../utils/functions";
+import contractNames from "../../../data/contractNames.json";
+import * as typechain from "../../../typechain-types";
 
 
 describe("helpers/getTokenHolders", function () {
@@ -14,70 +15,91 @@ describe("helpers/getTokenHolders", function () {
     let bob: Signer;
     let signerCount: number
 
-    beforeEach(async function () {
-        await deployFixture();
-        await transferTokens();
-    });
+    beforeEach(async () => await deployFixture() );
 
     async function deployFixture() {
         const signers = await ethers.getSigners();
         signerCount = signers.length;
         token = await deployContract<typechain.MockERC20>(contractNames.MockERC20);
-        owner = signers[0], 
-        alice = signers[1], 
-        bob = signers[2]
+        [owner,alice, bob] = signers 
+        await transferTokens();
     }
 
     async function transferTokens() {
         const provider = ethers.provider;
-        await provider.send("evm_mine", []);
+        await provider.send("evm_mine", [])
         await token.connect(alice).transfer(bob.getAddress(), parseEther("1000"));
-        await provider.send("evm_mine", []);
+        await provider.send("evm_mine", [])
         await token.connect(bob).transfer(owner.getAddress(), parseEther("5000"));
-        await provider.send("evm_mine", []);
+        await provider.send("evm_mine", [])
         await token.connect(owner).transfer(alice.getAddress(), parseEther("3000"));
         await provider.send("evm_mine", []);
     }
 
-    it("should return the correct holders amount", async function () {
-        const { holders } = await getTokenHolders(await token.getAddress(), 31337, "0x0", 1000, ethers.provider as any);
-        expect(holders.length).to.equal(signerCount);
-    });
+    describe("token holders", async function () {
+        it("should return the correct holders amount", async function () {
+            const { holders } = await getTokenHolders(await token.getAddress(), 31337, "0", 1000, ethers.provider as any);
+            expect(holders.length).to.equal(signerCount);
+        });
+    
+        it("should return the proper alice balance", async function () {
+            const { holders } = await getTokenHolders(await token.getAddress(), 31337, "0", 1000, ethers.provider as any);
+            const aliceAddress = await alice.getAddress();
+            const aliceBalance = Object.values(holders).find(holder => holder.address === aliceAddress)?.balance;
+            expect(aliceBalance).to.equal(await token.balanceOf(aliceAddress));
+        });
+    
+        it("should return the proper bob balance", async function () {
+            const { holders } = await getTokenHolders(await token.getAddress(), 31337, "0", 1000, ethers.provider as any);
+            const bobAddress = await bob.getAddress();
+            const bobBalance = Object.values(holders).find(holder => holder.address === bobAddress)?.balance;
+            expect(bobBalance).to.equal(await token.balanceOf(bobAddress));
+        });     
+    
+        it("should return the proper owner balance", async function () {
+            const { holders } = await getTokenHolders(await token.getAddress(), 31337, "0", 1000, ethers.provider as any);
+            const ownerAddress = await owner.getAddress();
+            const ownerBalance = Object.values(holders).find(holder => holder.address === ownerAddress)?.balance;
+            expect(ownerBalance).to.equal(await token.balanceOf(ownerAddress));
+        });
+    
+        it("should return modified balances from the sender after a transfer", async function () {
+            await token.connect(owner).transfer(await bob.getAddress(), parseEther("1000"));
+            const { holders } = await getTokenHolders(await token.getAddress(), 31337, "0", 1000, ethers.provider as any);
+            const ownerAddress = await owner.getAddress();
+            const ownerBalance = Object.values(holders).find(holder => holder.address === ownerAddress)?.balance;
+            expect(ownerBalance).to.equal(await token.balanceOf(ownerAddress));
+        });
+    
+        it("should return modified balances from the receiver after a transfer", async function () {
+            await token.connect(owner).transfer(await bob.getAddress(), parseEther("1000"));
+            const { holders } = await getTokenHolders(await token.getAddress(), 31337, "0", 1000, ethers.provider as any);
+            const bobAddress = await bob.getAddress();
+            const bobBalance = Object.values(holders).find(holder => holder.address === bobAddress)?.balance;
+            expect(bobBalance).to.equal(await token.balanceOf(bobAddress));
+        });
+    
+        it("should return the holders from a block distinct from GENESIS", async function () {
+            await token.connect(owner).transfer(await bob.getAddress(), parseEther("1000"));
+            const holdersThatTransferred = 2 // owner transferred to bob in this block
+            const currentBlock = await ethers.provider.getBlockNumber()
+            const { holders } = await getTokenHolders(await token.getAddress(), 31337, currentBlock.toString(), 1000, ethers.provider as any);
+            expect(holders.length).to.equal(holdersThatTransferred);
+        })
+    })
 
-    it("should return the proper alice balance", async function () {
-        const { holders } = await getTokenHolders(await token.getAddress(), 31337, "0x0", 1000, ethers.provider as any);
-        const aliceAddress = await alice.getAddress();
-        const aliceBalance = Object.values(holders).find(holder => holder.address === aliceAddress)?.balance;
-        expect(aliceBalance).to.equal(await token.balanceOf(aliceAddress));
-    });
+    describe("new block offset", async function () {
+        it("should return valid nextOffset", async function () {
+            const blocks = 3
+            const { nextOffset } = await getTokenHolders(await token.getAddress(), 31337, "0", blocks, ethers.provider as any);
+            expect(nextOffset).to.be.equal(blocks + 1)
+        })
 
-    it("should return the proper bob balance", async function () {
-        const { holders } = await getTokenHolders(await token.getAddress(), 31337, "0x0", 1000, ethers.provider as any);
-        const bobAddress = await bob.getAddress();
-        const bobBalance = Object.values(holders).find(holder => holder.address === bobAddress)?.balance;
-        expect(bobBalance).to.equal(await token.balanceOf(bobAddress));
-    });     
-
-    it("should return the proper owner balance", async function () {
-        const { holders } = await getTokenHolders(await token.getAddress(), 31337, "0x0", 1000, ethers.provider as any);
-        const ownerAddress = await owner.getAddress();
-        const ownerBalance = Object.values(holders).find(holder => holder.address === ownerAddress)?.balance;
-        expect(ownerBalance).to.equal(await token.balanceOf(ownerAddress));
-    });
-
-    it("should return modified balances from the sender after a transfer", async function () {
-        await token.connect(owner).transfer(await bob.getAddress(), parseEther("1000"));
-        const { holders } = await getTokenHolders(await token.getAddress(), 31337, "0x0", 1000, ethers.provider as any);
-        const ownerAddress = await owner.getAddress();
-        const ownerBalance = Object.values(holders).find(holder => holder.address === ownerAddress)?.balance;
-        expect(ownerBalance).to.equal(await token.balanceOf(ownerAddress));
-    });
-
-    it("should return modified balances from the receiver after a transfer", async function () {
-        await token.connect(owner).transfer(await bob.getAddress(), parseEther("1000"));
-        const { holders } = await getTokenHolders(await token.getAddress(), 31337, "0x0", 1000, ethers.provider as any);
-        const bobAddress = await bob.getAddress();
-        const bobBalance = Object.values(holders).find(holder => holder.address === bobAddress)?.balance;
-        expect(bobBalance).to.equal(await token.balanceOf(bobAddress));
-    });
+        it("should return lastBlock as nextOffset if out of range", async function () {
+            const blocks = 1000
+            const currentBlock = await ethers.provider.getBlockNumber()
+            const { nextOffset } = await getTokenHolders(await token.getAddress(), 31337, "0", blocks, ethers.provider as any);
+            expect(nextOffset).to.be.equal(currentBlock)
+        })
+    })
 });
