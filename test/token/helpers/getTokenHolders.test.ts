@@ -1,10 +1,11 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import getTokenHolders from "../../../lib/tokens/erc20/helpers/getTokenHolders";
-import * as typechain from "../../../typechain-types";
-import contractNames from "../../../data/contractNames.json";
-import { deployContract } from "../../../utils/functions";
 import { Signer, parseEther } from "ethers";
+
+import getTokenHolders from "../../../lib/tokens/erc20/helpers/getTokenHolders";
+import { deployContract } from "../../../utils/functions";
+import contractNames from "../../../data/contractNames.json";
+import * as typechain from "../../../typechain-types";
 
 
 describe("helpers/getTokenHolders", function () {
@@ -14,18 +15,14 @@ describe("helpers/getTokenHolders", function () {
     let bob: Signer;
     let signerCount: number
 
-    beforeEach(async function () {
-        await deployFixture();
-        await transferTokens();
-    });
+    beforeEach(async () => await deployFixture() );
 
     async function deployFixture() {
         const signers = await ethers.getSigners();
         signerCount = signers.length;
         token = await deployContract<typechain.MockERC20>(contractNames.MockERC20);
-        owner = signers[0], 
-        alice = signers[1], 
-        bob = signers[2]
+        [owner,alice, bob] = signers 
+        await transferTokens();
     }
 
     async function transferTokens() {
