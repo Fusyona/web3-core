@@ -1,9 +1,9 @@
 import { ZeroAddress } from "ethers"
 import { Address, SupportedProvider } from "../../../types";
 import ERC20NoWallet from "../ERC20NoWallet";
-import { getProvider, toHexString } from "./utils";
+import { getProvider, toHexString, DEFAULT_BLOCK_STEP } from "./utils";
 
-const DEFAULT_BLOCK_STEP = 10000;
+
 
 export type TokenHolder = {
     address: Address;
@@ -15,7 +15,13 @@ export type TokenHoldersResponse = {
     nextOffset: number;
 }
 
-export const getTokenHolders = async (tokenAddress: Address, chainId: number, offset: string, blocks = DEFAULT_BLOCK_STEP, provider?: SupportedProvider) => {   
+const getTokenHolders = async (
+    tokenAddress: Address, 
+    chainId: number, 
+    offset: string, 
+    blocks = DEFAULT_BLOCK_STEP, 
+    provider?: SupportedProvider
+) => {   
     if (!provider) {
         provider = getProvider(chainId);
     }
