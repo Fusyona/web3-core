@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { getTokenHolders } from "../../../lib/tokens/erc20/helpers/getTokenHolders";
+import getTokenHolders from "../../../lib/tokens/erc20/helpers/getTokenHolders";
 import * as typechain from "../../../typechain-types";
 import contractNames from "../../../data/contractNames.json";
 import { deployContract } from "../../../utils/functions";
