@@ -1,6 +1,6 @@
 import { SupportedProvider } from "../../../types";
 import networks from "../../../networks";
-import { JsonRpcProvider } from "ethers";
+import { JsonRpcProvider, toQuantity } from "ethers";
 
 export const DEFAULT_BLOCK_STEP = 10000;
 
@@ -13,6 +13,5 @@ export function getProvider(chainId: number): SupportedProvider {
 }
 
 export function toHexString(value: string): string {
-    const v = parseInt(value)
-    return "0x" + v.toString(16)
+    return toQuantity(value)
 }
