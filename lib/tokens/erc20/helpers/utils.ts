@@ -2,6 +2,8 @@ import { SupportedProvider } from "../../../types";
 import networks from "../../../networks";
 import { JsonRpcProvider } from "ethers";
 
+export const DEFAULT_BLOCK_STEP = 10000;
+
 export function getProvider(chainId: number): SupportedProvider {
     const network = Object.values(networks).find(network => network.chainId === chainId);
     if (!network) {

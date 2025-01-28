@@ -1,7 +1,9 @@
 import { ZeroAddress } from "ethers"
 import { Address, SupportedProvider } from "../../../types";
-import ERC20NoWallet from "../ERC20NoWallet";
-import { getProvider, toHexString, DEFAULT_BLOCK_STEP } from "./utils";
+import { getProvider, DEFAULT_BLOCK_STEP } from "./utils";
+import getTokenEvents from "./getTokenEvents";
+import { TypedContractEvent, TypedEventLog } from "../../../../typechain-types/common";
+import { TransferEvent } from "../../../../typechain-types/contracts/ERC721/ERC721MintScheme";
 
 
 
@@ -25,10 +27,12 @@ const getTokenHolders = async (
     if (!provider) {
         provider = getProvider(chainId);
     }
-    const erc20 = new ERC20NoWallet(tokenAddress, Number(chainId), provider);
-
-    const filter = erc20.contractCall.filters.Transfer();
-    const events = await erc20.contractCall.queryFilter(filter, toHexString(offset), blocks);
+    const events: TypedEventLog<
+        TypedContractEvent<
+            TransferEvent.InputTuple, 
+            TransferEvent.OutputTuple
+        >
+    >[] = await getTokenEvents(tokenAddress, "Transfer", chainId, offset, blocks, provider)
 
     const holdersMap: Record<Address, bigint> = {}
     const holders: TokenHolder[] = []
