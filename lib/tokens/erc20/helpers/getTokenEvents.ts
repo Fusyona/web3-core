@@ -17,11 +17,15 @@ const getTokenEvents = async (
     }
 
     const erc20 = new ERC20NoWallet(tokenAddress, Number(chainId), provider);
-    
-    const event = erc20.contractCall.getEvent(eventName as any)
-    const events = await erc20.contractCall.queryFilter(event, toHexString(offset), blocks)
 
-    return events
+    
+    const lastBlock = await provider.getBlockNumber();
+    const nextOffset = Number(offset) + blocks <= lastBlock ? Number(offset) + blocks + 1 : lastBlock;
+
+    const event = erc20.contractCall.getEvent(eventName as any)
+    const events = await erc20.contractCall.queryFilter(event, toHexString(offset), nextOffset)
+    
+    return {events, nextOffset}
 }
 
 export default getTokenEvents

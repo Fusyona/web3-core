@@ -27,17 +27,19 @@ const getTokenHolders = async (
     if (!provider) {
         provider = getProvider(chainId);
     }
-    const events: TypedEventLog<
-        TypedContractEvent<
-            TransferEvent.InputTuple, 
-            TransferEvent.OutputTuple
-        >
-    >[] = await getTokenEvents(tokenAddress, "Transfer", chainId, offset, blocks, provider)
+
+    const {events, nextOffset} = await getTokenEvents(tokenAddress, "Transfer", chainId, offset, blocks, provider)
 
     const holdersMap: Record<Address, bigint> = {}
     const holders: TokenHolder[] = []
 
-    events.forEach(event => {
+    events.forEach(
+        (event: TypedEventLog<
+            TypedContractEvent<
+                TransferEvent.InputTuple, 
+                TransferEvent.OutputTuple
+            >>
+        ) => {
         if (event.args.from !== ZeroAddress) {
             holdersMap[event.args.from] = (holdersMap[event.args.from] || 0n) - event.args.value;
         }
@@ -53,9 +55,6 @@ const getTokenHolders = async (
             balance: holdersMap[address]
         })
     });
-
-    const lastBlock = await provider.getBlockNumber();
-    const nextOffset = Number(offset) + blocks <= lastBlock ? Number(offset) + blocks + 1 : lastBlock;
     
     return {holders, nextOffset};
 }
