@@ -76,8 +76,8 @@ importers:
         specifier: ^2.2.2
         version: 2.2.2(hardhat@2.22.3(ts-node@10.9.2(@types/node@20.12.7)(typescript@5.4.5))(typescript@5.4.5))(typescript@5.4.5)
       hardhat-inspect:
-        specifier: ^0.1.11
-        version: 0.1.11(hardhat@2.22.3(ts-node@10.9.2(@types/node@20.12.7)(typescript@5.4.5))(typescript@5.4.5))
+        specifier: ^0.1.14
+        version: 0.1.14(hardhat-deploy@0.12.2)(hardhat@2.22.3(ts-node@10.9.2(@types/node@20.12.7)(typescript@5.4.5))(typescript@5.4.5))
       hardhat-neovim:
         specifier: ^0.3.3
         version: 0.3.3
@@ -1462,10 +1462,11 @@ packages:
     peerDependencies:
       hardhat: ^2.16.0
 
-  hardhat-inspect@0.1.11:
-    resolution: {integrity: sha512-BHYMG5BHbvBFCJ0R5outknEAA4yFa5P1yRQ5vr6Q3Z/Kn3JTFvaxgCzDC7wveqjL81BbLZW49w0mC/t/gyyWpg==}
+  hardhat-inspect@0.1.14:
+    resolution: {integrity: sha512-sjFKaQoes6Mrb/6NquY2NmeaWJnlw/AOa84fq+TyzkGHaHN1HvlTaLjZrbTwpAKoIwK7bfBimolTEhQQHUpheg==}
     peerDependencies:
       hardhat: ^2.0.0
+      hardhat-deploy: ^0.12.0
 
   hardhat-neovim@0.3.3:
     resolution: {integrity: sha512-Uu4ML8iI9oL3Gty3RR0USvXxzXNpObRnuB8otZut+XNNALUAskiUHS4ITuKTKlGMtwJoDkYHmvRqPf+pgKudXA==}
@@ -4437,9 +4438,10 @@ snapshots:
       - utf-8-validate
       - zod
 
-  hardhat-inspect@0.1.11(hardhat@2.22.3(ts-node@10.9.2(@types/node@20.12.7)(typescript@5.4.5))(typescript@5.4.5)):
+  hardhat-inspect@0.1.14(hardhat-deploy@0.12.2)(hardhat@2.22.3(ts-node@10.9.2(@types/node@20.12.7)(typescript@5.4.5))(typescript@5.4.5)):
     dependencies:
       hardhat: 2.22.3(ts-node@10.9.2(@types/node@20.12.7)(typescript@5.4.5))(typescript@5.4.5)
+      hardhat-deploy: 0.12.2
 
   hardhat-neovim@0.3.3: {}
 
