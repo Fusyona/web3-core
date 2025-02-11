@@ -85,7 +85,7 @@ export class NetworkConfigs {
         let networkConfigs: any = {};
         let networksToConsider: NetworkConfig[] = [];
 
-        if (typeof filteredNetworks === "undefined") {
+        if (!filteredNetworks) {
             networksToConsider = this.getNetworks();
         } else {
             this.getNetworks().filter((networkConfig) =>
@@ -93,7 +93,7 @@ export class NetworkConfigs {
             );
         }
 
-        networksToConsider.map((network) => (networkConfigs[network.name] = network.config));
+        networksToConsider.forEach((network) => (networkConfigs[network.name] = network.config));
         return networkConfigs;
     }
 
