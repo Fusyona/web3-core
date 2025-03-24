@@ -16,6 +16,10 @@ contract ERC1363Store is AccessControl, IERC1363Receiver {
     
     public mapping (uint256 => ShopItem) public shopItems;
 
+    error InsufficientFunds();
+    error InvalidTokenTransfer();
+    error InvalidDataParams();
+
     constructor(address _collectionAddress, address _tokenAddress) {
         collectionAddress = _collectionAddress;
         tokenAddress = _tokenAddress;
@@ -34,6 +38,19 @@ contract ERC1363Store is AccessControl, IERC1363Receiver {
         uint256 amount,
         bytes calldata data
     ) external override returns (bytes4) {
+        require(from == tokenAddress, InvalidTokenTransfer());
+
+        uint256 id, uint256 amount, address receiver = abi.decode(data, (uint256, uint256, address));
+        require(id > 0 && amount > 0 && receiver != address(0), InvalidDataParams());
+
+        ShopItem memory shopItem = shopItems[id];
+
+        uint256 totalCost = shopItem.price * amount;
+        require(totalCost <= amount, InsufficientFunds());
+
+        // mint token in collection
+        // IERC1155(collectionAddress).
+
         return IERC1363Receiver.onTransferReceived.selector;
     }
 }
