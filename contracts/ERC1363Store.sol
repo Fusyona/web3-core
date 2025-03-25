@@ -3,7 +3,8 @@ pragma solidity ^8.0.26;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/interfaces/IERC1363Receiver.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
+
+import "./IERC1155Mintable.sol";
 
 contract ERC1363Store is AccessControl, IERC1363Receiver {
     struct ShopItem {
@@ -20,6 +21,9 @@ contract ERC1363Store is AccessControl, IERC1363Receiver {
     error InvalidTokenTransfer();
     error InvalidDataParams();
 
+    event ShopItemUpdated(uint256 id, ShopItem memory shopItem);
+    event ItemSold(uint256 id, uint256 amount, address receiver);
+
     constructor(address _collectionAddress, address _tokenAddress) {
         collectionAddress = _collectionAddress;
         tokenAddress = _tokenAddress;
@@ -30,6 +34,7 @@ contract ERC1363Store is AccessControl, IERC1363Receiver {
 
     external function updateShopItem(uint256 id, ShopItem memory shopItem) onlyRole(MODERATOR_ROLE) {
         shopItems[id] = shopItem;
+        emit ShopItemUpdated(id, shopItem);
     }
 
     function onTransferReceived(
@@ -44,12 +49,13 @@ contract ERC1363Store is AccessControl, IERC1363Receiver {
         require(id > 0 && amount > 0 && receiver != address(0), InvalidDataParams());
 
         ShopItem memory shopItem = shopItems[id];
-
         uint256 totalCost = shopItem.price * amount;
         require(totalCost <= amount, InsufficientFunds());
 
         // mint token in collection
-        // IERC1155(collectionAddress).
+        IERC1155Mintable(collectionAddress).mint(receiver, id, amount, "");
+
+        emit ItemSold(id, amount, receiver);
 
         return IERC1363Receiver.onTransferReceived.selector;
     }
