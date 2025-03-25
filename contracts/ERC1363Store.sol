@@ -1,4 +1,5 @@
-pragma solidity ^8.0.26;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.26;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/interfaces/IERC1363Receiver.sol";
@@ -11,32 +12,33 @@ contract ERC1363Store is AccessControl, IERC1363Receiver {
         uint256 price;
     }
 
-    public address collectionAddress;
-    public address tokenAddress;
-    public bytes32 MODERATOR_ROLE = keccak256("MODERATOR_ROLE");
+    address public collectionAddress;
+    address public tokenAddress;
+    bytes32 public MODERATOR_ROLE = keccak256("MODERATOR_ROLE");
     
-    public mapping (uint256 => ShopItem) public shopItems;
+    mapping (uint256 => ShopItem) public shopItems;
 
     error InsufficientFunds();
     error InvalidTokenTransfer();
     error InvalidDataParams();
 
-    event ShopItemUpdated(uint256 id, ShopItem memory shopItem);
+    event ShopItemUpdated(uint256 id, ShopItem shopItem);
     event ItemSold(uint256 id, uint256 amount, address receiver);
 
     constructor(address _collectionAddress, address _tokenAddress) {
         collectionAddress = _collectionAddress;
         tokenAddress = _tokenAddress;
-        _setOwner(msg.sender);
         _grantRole(MODERATOR_ROLE, msg.sender);
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
-    external function updateShopItem(uint256 id, ShopItem memory shopItem) onlyRole(MODERATOR_ROLE) {
+    /* @dev Update the data of an item in the store, currently only price is relevant */
+    function updateShopItem(uint256 id, ShopItem memory shopItem) onlyRole(MODERATOR_ROLE) external {
         shopItems[id] = shopItem;
         emit ShopItemUpdated(id, shopItem);
     }
 
+    /* @dev Implement the {IERC1363Receiver.onTransferReceived} function to buy items from the store on hook calls */
     function onTransferReceived(
         address operator,
         address from,
@@ -45,17 +47,16 @@ contract ERC1363Store is AccessControl, IERC1363Receiver {
     ) external override returns (bytes4) {
         require(from == tokenAddress, InvalidTokenTransfer());
 
-        uint256 id, uint256 amount, address receiver = abi.decode(data, (uint256, uint256, address));
-        require(id > 0 && amount > 0 && receiver != address(0), InvalidDataParams());
+        (uint256 id, uint256 itemAmount, address receiver) = abi.decode(data, (uint256, uint256, address));
+        require(id > 0 && itemAmount > 0 && receiver != address(0), InvalidDataParams());
 
         ShopItem memory shopItem = shopItems[id];
-        uint256 totalCost = shopItem.price * amount;
+        uint256 totalCost = shopItem.price * itemAmount;
         require(totalCost <= amount, InsufficientFunds());
 
-        // mint token in collection
-        IERC1155Mintable(collectionAddress).mint(receiver, id, amount, "");
+        IERC1155Mintable(collectionAddress).mint(receiver, id, itemAmount, "");
 
-        emit ItemSold(id, amount, receiver);
+        emit ItemSold(id, itemAmount, receiver);
 
         return IERC1363Receiver.onTransferReceived.selector;
     }

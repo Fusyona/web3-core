@@ -12,7 +12,29 @@ const ANOTHER_PRIVATE_KEY = vars.get("ANOTHER_PRIVATE_KEY");
 const networks = new NetworkConfigs([PRIVATE_KEY, ANOTHER_PRIVATE_KEY]);
 
 const config: HardhatUserConfig = {
-    solidity: "0.8.25",
+    solidity: {
+        compilers: [
+            {
+                version: "0.8.26",
+                settings: {
+                    viaIR: true,
+                    optimizer: {
+                        enabled: true,
+                        runs: 200,
+                    },
+                },
+            },
+            {
+                version: "0.8.25",
+                settings: {
+                    optimizer: {
+                        enabled: true,
+                        runs: 200,
+                    },
+                },
+            }
+        ],
+    },
     namedAccounts: {
         deployer: {
             default: "0x16c7C5849A6769d58F9df6A26960F3293EF379e0",
@@ -22,10 +44,9 @@ const config: HardhatUserConfig = {
     },
     networks: {
         sei: networks.network("sei"),
-
+        seiTestnet: networks.network("seiTestnet"),
         sepolia: networks.network("sepolia"),
         bscTestnet: networks.network("bscTestnet"),
-        seiTestnet: networks.network("seiTestnet"),
         seiDevnet: networks.network("seiDevnet"),
         baseSepolia: networks.network("baseSepolia"),
     },
