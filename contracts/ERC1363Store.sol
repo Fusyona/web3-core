@@ -16,14 +16,14 @@ contract ERC1363Store is AccessControl, IERC1363Receiver {
     address public tokenAddress;
     bytes32 public MODERATOR_ROLE = keccak256("MODERATOR_ROLE");
     
-    mapping (uint256 => ShopItem) public shopItems;
+    mapping (uint256 id => ShopItem) public shopItems;
+
+    event ShopItemUpdated(uint256 id, ShopItem shopItem);
+    event ItemSold(uint256 id, uint256 amount, address receiver);
 
     error InsufficientFunds();
     error InvalidTokenTransfer();
     error InvalidDataParams();
-
-    event ShopItemUpdated(uint256 id, ShopItem shopItem);
-    event ItemSold(uint256 id, uint256 amount, address receiver);
 
     constructor(address _collectionAddress, address _tokenAddress) {
         collectionAddress = _collectionAddress;
@@ -55,9 +55,7 @@ contract ERC1363Store is AccessControl, IERC1363Receiver {
         require(totalCost <= amount, InsufficientFunds());
 
         IERC1155Mintable(collectionAddress).mint(receiver, id, itemAmount, "");
-
         emit ItemSold(id, itemAmount, receiver);
-
         return IERC1363Receiver.onTransferReceived.selector;
     }
 }
