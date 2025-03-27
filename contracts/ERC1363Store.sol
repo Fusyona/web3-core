@@ -45,7 +45,7 @@ contract ERC1363Store is AccessControl, IERC1363Receiver {
         uint256 amount,
         bytes calldata data
     ) external override returns (bytes4) {
-        require(from == tokenAddress, InvalidTokenTransfer());
+        require(_msgSender() == tokenAddress, InvalidTokenTransfer());
 
         (uint256 id, uint256 itemAmount, address receiver) = abi.decode(data, (uint256, uint256, address));
         require(id > 0 && itemAmount > 0 && receiver != address(0), InvalidDataParams());
