@@ -2,8 +2,8 @@ import { ethers } from "hardhat";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 
-import contractNames from "../data/contractNames.json";
-const name = contractNames.ERC1363Store;
+import { roles } from "../utils/constants";
+import contractNames, { ERC1363Store as name } from "../data/contractNames.json";
 
 const func: DeployFunction = async function (env: HardhatRuntimeEnvironment) {
     const { deployments, getNamedAccounts } = env;
@@ -33,14 +33,14 @@ const func: DeployFunction = async function (env: HardhatRuntimeEnvironment) {
     await execute(contractNames.MockERC1155Mintable, 
         {from: deployer}, 
         "grantRole",
-        ethers.keccak256(ethers.toUtf8Bytes("MINTER_ROLE")),
+        roles.MINTER,
         erc1363store.address,
     );
 
     await execute(contractNames.MockERC1155Mintable, 
         {from: deployer}, 
         "grantRole",
-        ethers.keccak256(ethers.toUtf8Bytes("CREATOR_ROLE")),
+        roles.CREATOR,
         deployer,
     );
 
