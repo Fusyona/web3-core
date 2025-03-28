@@ -4,6 +4,7 @@ pragma solidity ^0.8.26;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/interfaces/IERC1363Receiver.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "./IERC1155Mintable.sol";
 
@@ -59,5 +60,12 @@ contract ERC1363Store is AccessControl, IERC1363Receiver {
         emit ItemSold(id, itemAmount, receiver);
 
         return IERC1363Receiver.onTransferReceived.selector;
+    }
+
+    function withdrawFunds() onlyRole(DEFAULT_ADMIN_ROLE) external {
+        IERC20 token = IERC20(tokenAddress);
+        uint256 balance = token.balanceOf(address(this));
+
+        SafeERC20.safeTransfer(token, _msgSender(), balance);
     }
 }
