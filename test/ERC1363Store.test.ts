@@ -2,6 +2,7 @@ import { deployments, ethers, getNamedAccounts } from "hardhat";
 import { ERC1363Store, MockERC1155Mintable, MockERC20Payable } from "../typechain-types";
 import { BytesLike, parseEther, Signer } from "ethers";
 import { expect } from "chai";
+import { roles } from "../utils/constants";
 
 describe("ERC1363Store", function () {
     let store: ERC1363Store
@@ -40,7 +41,7 @@ describe("ERC1363Store", function () {
 
     describe("ShopItem", async () => {
         beforeEach(async () => {
-            await store.connect(deployer).grantRole(ethers.keccak256(ethers.toUtf8Bytes("MODERATOR_ROLE")), await deployer.getAddress())
+            await store.connect(deployer).grantRole(roles.MODERATOR, await deployer.getAddress())
         })
 
         it("should allow MODERATOR to update a ShopItem", async () => {
@@ -62,8 +63,8 @@ describe("ERC1363Store", function () {
         beforeEach(async () => {
             // Create sample tokens 
             await collection.connect(deployer).createNft(1n, 5n)
-
-            await store.connect(deployer).grantRole(ethers.keccak256(ethers.toUtf8Bytes("MODERATOR_ROLE")), await deployer.getAddress())
+            
+            await store.connect(deployer).grantRole(roles.MODERATOR, await deployer.getAddress())
             await store.connect(deployer).updateShopItem(1, {price: parseEther("1")})
         })
 

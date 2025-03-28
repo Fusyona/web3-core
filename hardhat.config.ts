@@ -41,6 +41,11 @@ const config: HardhatUserConfig = {
             localhost: 0,
             hardhat: 0,
         },
+        owner: {
+            default: "0x18b26a0AB10CfA117ecebFB1954A904cD3E561C3",
+            localhost: 1,
+            hardhat: 1,
+        }
     },
     networks: {
         sei: networks.network("sei"),
