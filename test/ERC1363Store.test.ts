@@ -56,7 +56,11 @@ describe("ERC1363Store", function () {
             const coder = ethers.AbiCoder.defaultAbiCoder()
             return coder.encode(["uint256", "uint256", "address"], [id, amount, receiver])
         }
+
         beforeEach(async () => {
+            // Create sample tokens 
+            await collection.connect(deployer).createNft(1n, 5n)
+            
             await store.connect(deployer).grantRole(ethers.keccak256(ethers.toUtf8Bytes("MODERATOR_ROLE")), await deployer.getAddress())
             await store.connect(deployer).updateShopItem(1, {price: parseEther("1")})
         })

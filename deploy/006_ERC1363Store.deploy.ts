@@ -43,13 +43,6 @@ const func: DeployFunction = async function (env: HardhatRuntimeEnvironment) {
         ethers.keccak256(ethers.toUtf8Bytes("CREATOR_ROLE")),
         deployer,
     );
-
-    await execute(contractNames.MockERC1155Mintable, 
-        {from: deployer}, 
-        "createNft",
-        1,
-        5
-    );
 };
 
 export default func;
