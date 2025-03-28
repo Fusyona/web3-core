@@ -12,6 +12,11 @@ describe("ERC1363Store", function () {
     let deployer: Signer
     let userA: Signer
 
+    function encodePurchaseData(id: BigInt, amount: BigInt, receiver: string): BytesLike {
+        const coder = ethers.AbiCoder.defaultAbiCoder()
+        return coder.encode(["uint256", "uint256", "address"], [id, amount, receiver])
+    }
+
     beforeEach(async () => {
         await deployments.fixture();
 
@@ -52,15 +57,12 @@ describe("ERC1363Store", function () {
     })
 
     describe ("Item Purchase", async () => {
-        function encodePurchaseData(id: BigInt, amount: BigInt, receiver: string): BytesLike {
-            const coder = ethers.AbiCoder.defaultAbiCoder()
-            return coder.encode(["uint256", "uint256", "address"], [id, amount, receiver])
-        }
+        
 
         beforeEach(async () => {
             // Create sample tokens 
             await collection.connect(deployer).createNft(1n, 5n)
-            
+
             await store.connect(deployer).grantRole(ethers.keccak256(ethers.toUtf8Bytes("MODERATOR_ROLE")), await deployer.getAddress())
             await store.connect(deployer).updateShopItem(1, {price: parseEther("1")})
         })
@@ -129,6 +131,41 @@ describe("ERC1363Store", function () {
                 encodePurchaseData(1n, 1n, userAAddress)
             )
             expect(await collection.balanceOf(userAAddress, 1n)).to.be.equal(1)
+        })
+    })
+
+    describe("Funds Withdrawal", async () => {
+        beforeEach(async () => {
+            const storeAddress = await store.getAddress()
+            const userAAddress = await userA.getAddress()
+
+            // Create sample tokens 
+            await collection.connect(deployer).createNft(1n, 5n)
+
+            await store.connect(deployer).grantRole(ethers.keccak256(ethers.toUtf8Bytes("MODERATOR_ROLE")), await deployer.getAddress())
+            await store.connect(deployer).updateShopItem(1, {price: parseEther("1")})
+
+            await token.connect(userA)["transferAndCall(address,uint256,bytes)"](
+                storeAddress, 
+                parseEther("5"), 
+                encodePurchaseData(1n, 5n, userAAddress)
+            )
+        })
+
+        it("should allow admin to withdraw funds", async () => {
+            await expect(store.connect(deployer).withdrawFunds()).to.not.be.reverted
+        })
+
+        it("should not allow user without admin role to extract funds", async () => {
+            await expect(store.connect(userA).withdrawFunds()).to.be.reverted
+        })
+
+        it("should transfer properly the withdrawn funds to admin account", async () => {
+            const deployerAddress = await deployer.getAddress()
+            const preBalance = await token.balanceOf(deployerAddress)
+            await store.connect(deployer).withdrawFunds()
+            
+            expect(await token.balanceOf(deployerAddress)).to.be.equal(preBalance + parseEther("5"))
         })
     })
 })
