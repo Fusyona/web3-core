@@ -60,10 +60,10 @@ contract ERC1363Store is AccessControl, IERC1363Receiver {
         return IERC1363Receiver.onTransferReceived.selector;
     }
 
-    function withdrawFunds() onlyRole(DEFAULT_ADMIN_ROLE) external {
+    function withdrawFunds(address receiver) onlyRole(DEFAULT_ADMIN_ROLE) external {
         IERC20 token = IERC20(tokenAddress);
         uint256 balance = token.balanceOf(address(this));
 
-        SafeERC20.safeTransfer(token, _msgSender(), balance);
+        SafeERC20.safeTransfer(token, receiver, balance);
     }
 }

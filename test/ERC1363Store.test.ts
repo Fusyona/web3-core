@@ -154,17 +154,19 @@ describe("ERC1363Store", function () {
         })
 
         it("should allow admin to withdraw funds", async () => {
-            await expect(store.connect(deployer).withdrawFunds()).to.not.be.reverted
+            const deployerAddress = await deployer.getAddress()
+            await expect(store.connect(deployer).withdrawFunds(deployerAddress)).to.not.be.reverted
         })
 
         it("should not allow user without admin role to extract funds", async () => {
-            await expect(store.connect(userA).withdrawFunds()).to.be.reverted
+            const userAddress = await userA.getAddress()
+            await expect(store.connect(userA).withdrawFunds(userAddress)).to.be.reverted
         })
 
         it("should transfer properly the withdrawn funds to admin account", async () => {
             const deployerAddress = await deployer.getAddress()
             const preBalance = await token.balanceOf(deployerAddress)
-            await store.connect(deployer).withdrawFunds()
+            await store.connect(deployer).withdrawFunds(deployerAddress)
             
             expect(await token.balanceOf(deployerAddress)).to.be.equal(preBalance + parseEther("5"))
         })
