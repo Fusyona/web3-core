@@ -1,61 +1,44 @@
-import { Provider, Wallet } from "ethers";
-import { Address, SupportedProvider } from "../types" ;
-import { waitAndReturn } from "../util";
+import { Provider } from "ethers";
+import { Address } from "../types" ;
 
-export default class TransactionSponsor {
+export default abstract class TransactionSponsor {
 
-    private funder: Wallet;
-    private fundingAmount : bigint ;
-    private confirmations : number | undefined  ;
+    public fundingAmount : bigint ;
+    public confirmations : number | undefined  ;
 
     constructor(
-        funderPrivateKey: Address,
         fundingAmount: bigint,
-        provider: SupportedProvider,
         confirmations: number | undefined = undefined
     ) {
-        this.funder = new Wallet(funderPrivateKey, provider);
         this.fundingAmount = fundingAmount ;
         this.confirmations = confirmations ;
     }
 
-    withFunder(newFunder: Wallet) {
-        this.setFunder(newFunder) ;
+    withFundingAmount(fundingAmount: bigint) {
+        this.setFundingAmount(fundingAmount) ;
         return this ;
     }
 
-    setFunder(newFunder: Wallet) {
-        this.funder = newFunder ;
+    setFundingAmount(fundingAmount: bigint) {
+        this.fundingAmount = fundingAmount ;
     }
 
     async ensureBalanceToDo<T>(
-        callback: () => Promise<T>,
         caller: Address,
         provider: Provider,
+        callback: () => Promise<T>,
     ) {
-        await this.fundUserIfNecessary(caller, provider);
+        if (await this.needsFunding(caller, provider)) {
+            await this.fund(caller);
+        }
         return callback();
     }
 
-    private async fundUserIfNecessary(user: Address, provider: Provider) {
+    async needsFunding(user: Address, provider: Provider) {
         const userBalance = await provider.getBalance(user);
         const threshold = this.fundingAmount /  BigInt(10) ;
-        if (userBalance < threshold) {
-            await this.getValueFor(user, provider);
-        }
+        return userBalance < threshold ;
     }
 
-    private async getValueFor(user: Address, provider: Provider) {
-        const currentBalance = await provider.getBalance(user);
-        const valueToSend = this.fundingAmount - currentBalance ;
-
-        await waitAndReturn(
-            this.funder.sendTransaction({
-                to: user,
-                value: valueToSend,
-            }),
-            this.confirmations
-        );
-    }
+    abstract fund(user: Address) : Promise<void> ;
 }
-
